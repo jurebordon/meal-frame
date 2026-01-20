@@ -5,7 +5,78 @@
 
 ---
 
-## Session: 2026-01-20
+## Session: 2026-01-20 (2)
+
+**Role**: backend
+**Task**: Implement database schema and migrations (Alembic)
+**Branch**: feat/database-schema
+
+### Summary
+- Created all 12 SQLAlchemy models exactly matching Tech Spec v0 schema
+- Implemented proper relationships, indexes, and constraints per specification
+- Generated initial Alembic migration with auto-detection
+- Applied migration and verified all tables created correctly in PostgreSQL
+- Tested both upgrade and downgrade migrations successfully
+- Confirmed API health after schema application
+
+### Files Changed
+- backend/app/models/meal_type.py (created)
+- backend/app/models/meal.py (created)
+- backend/app/models/meal_to_meal_type.py (created - junction table)
+- backend/app/models/day_template.py (created - DayTemplate + DayTemplateSlot)
+- backend/app/models/week_plan.py (created - WeekPlan + WeekPlanDay)
+- backend/app/models/weekly_plan.py (created - WeeklyPlanInstance + days + slots)
+- backend/app/models/round_robin.py (created - RoundRobinState)
+- backend/app/models/app_config.py (created - AppConfig singleton)
+- backend/app/models/__init__.py (export all models)
+- backend/alembic/env.py (import models for auto-detection)
+- backend/alembic/versions/1454edda6380_initial_schema.py (generated migration)
+- docs/ROADMAP.md (updated task status)
+- docs/SESSION_LOG.md (this entry)
+
+### Decisions
+- All models use UUIDs as primary keys (per Tech Spec)
+- Timezone-aware timestamps (TIMESTAMPTZ) for all datetime fields
+- Proper cascade behaviors: CASCADE for owned children, SET NULL for references, RESTRICT for templates
+- Indexes on: meal.name, meal.created_at (for round-robin), meal_type.name, all date fields
+- CHECK constraints: weekday (0-6), completion_status enum, app_config singleton (id=1)
+- UNIQUE constraints: position uniqueness, date uniqueness where required
+- Did NOT add user_id columns yet (deferred per session plan decision)
+
+### Testing Performed
+- Generated migration with `alembic revision --autogenerate`
+- Applied migration with `alembic upgrade head`
+- Verified all 12 tables + alembic_version table created
+- Checked table structures match Tech Spec exactly (via psql \d commands)
+- Confirmed indexes, foreign keys, and constraints present
+- Tested rollback with `alembic downgrade base`
+- Re-applied migration successfully
+- Verified API health endpoint still responsive
+
+### Schema Verification
+All tables created with correct structure:
+- meal_type: name index (unique), tags array, timestamps
+- meal: name + created_at indexes, portion_description NOT NULL, macros optional
+- meal_to_meal_type: composite PK, CASCADE deletes
+- day_template + day_template_slot: position uniqueness, RESTRICT on meal_type FK
+- week_plan + week_plan_day: weekday CHECK (0-6), is_default flag
+- weekly_plan_instance: unique week_start_date, SET NULL on week_plan
+- weekly_plan_instance_day: date uniqueness, is_override flag, template switching support
+- weekly_plan_slot: completion_status CHECK (5 values + NULL), composite unique on (instance, date, position)
+- round_robin_state: PK on meal_type_id, tracks last_meal_id
+- app_config: singleton CHECK (id=1), timezone, week_start_day
+
+### Blockers
+- None
+
+### Next
+- Implement round-robin meal selection algorithm (services/round_robin.py)
+- Build Pydantic schemas for API requests/responses
+- Build API endpoints for daily use and weekly planning
+
+---
+
+## Session: 2026-01-20 (1)
 
 **Role**: backend
 **Task**: Set up backend foundation (FastAPI + PostgreSQL + Docker)

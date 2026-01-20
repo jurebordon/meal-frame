@@ -6,27 +6,26 @@
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Implement database schema and migrations (Alembic)
+- [ ] Implement round-robin meal selection algorithm
 
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-1. Build core data models (Meal, MealType, DayTemplate, WeekPlan)
-2. Implement round-robin meal selection algorithm
-3. Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
-4. Build API endpoints for weekly planning (generate, template switching)
-5. Set up frontend foundation (Next.js + PWA)
-6. Build Today View (mobile-first, primary screen)
-7. Build completion tracking UI with status selection
-8. Implement CSV meal import functionality
-9. Build Week View (overview and template switching)
-10. Build Meals Library (CRUD for meals)
-11. Build Setup screens (Meal Types, Day Templates, Week Plans)
-12. Implement offline support (service worker, cache strategy)
-13. Build Stats view (adherence, streaks)
-14. Seed initial data (Meal Types, Day Templates, Week Plan)
-15. End-to-end testing (daily flows, weekly generation)
-16. Deployment setup (Docker Compose production config)
+1. Build Pydantic schemas for API requests/responses
+2. Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
+3. Build API endpoints for weekly planning (generate, template switching)
+4. Set up frontend foundation (Next.js + PWA)
+5. Build Today View (mobile-first, primary screen)
+6. Build completion tracking UI with status selection
+7. Implement CSV meal import functionality
+8. Build Week View (overview and template switching)
+9. Build Meals Library (CRUD for meals)
+10. Build Setup screens (Meal Types, Day Templates, Week Plans)
+11. Implement offline support (service worker, cache strategy)
+12. Build Stats view (adherence, streaks)
+13. Seed initial data (Meal Types, Day Templates, Week Plan)
+14. End-to-end testing (daily flows, weekly generation)
+15. Deployment setup (Docker Compose production config)
 
 ## Later (Backlog)
 
@@ -44,6 +43,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Implement database schema and migrations (Alembic) (2026-01-20)
 - [x] Set up backend foundation (FastAPI + PostgreSQL + Docker) (2026-01-20)
 - [x] Set up project structure and development environment (2026-01-19)
 - [x] Created PRD and Tech Spec (2026-01-19)
