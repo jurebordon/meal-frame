@@ -5,6 +5,7 @@ Environment variables are loaded from .env file or system environment.
 All settings can be overridden via environment variables.
 """
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,7 +21,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://mealframe:password@localhost:5432/mealframe"
 
     # CORS configuration
-    cors_origins: list[str] = ["http://localhost:3000"]
+    # Can be a comma-separated string or a list
+    cors_origins: list[str] | str = ["http://localhost:3000"]
 
     # API configuration
     api_title: str = "MealFrame API"
@@ -29,6 +31,14 @@ class Settings(BaseSettings):
 
     # Server configuration
     debug: bool = False
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        """Parse CORS origins from comma-separated string or list."""
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",")]
+        return v
 
     model_config = SettingsConfigDict(
         env_file=".env",

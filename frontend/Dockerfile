@@ -1,17 +1,21 @@
 # Frontend Dockerfile
-# TODO: Implement in next session
+# Development Dockerfile for Next.js application
 
 FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package.json package-lock.json* ./
-RUN npm ci
 
+# Install dependencies
+# Use npm install if no package-lock.json exists, otherwise use npm ci
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+# Copy application source
 COPY . .
-
-RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Development mode (hot reload)
+CMD ["npm", "run", "dev"]
