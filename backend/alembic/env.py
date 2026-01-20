@@ -20,6 +20,10 @@ from app.config import settings
 # Import Base to get all model metadata
 from app.database import Base
 
+# Import all models for autogenerate support
+# This ensures Alembic can detect all tables when generating migrations
+import app.models  # noqa: F401
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
