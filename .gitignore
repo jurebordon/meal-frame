@@ -19,6 +19,9 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+.mypy_cache/
+.ruff_cache/
+*.pyc
 
 # Node.js / Next.js
 node_modules/
@@ -30,6 +33,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Environment variables
 .env
@@ -40,10 +46,12 @@ yarn-error.log*
 *.db
 *.sqlite
 *.sqlite3
+pgdata/
 
 # Docker
 *.log
 docker-compose.override.yml
+.dockerignore
 
 # IDE
 .vscode/
