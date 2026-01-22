@@ -1,31 +1,30 @@
 # Roadmap
 
-**Last Updated**: 2026-01-20
+**Last Updated**: 2026-01-22
 **Current Phase**: MVP - Foundation
 
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Implement round-robin meal selection algorithm
+- [ ] Build Pydantic schemas for API requests/responses
 
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-1. Build Pydantic schemas for API requests/responses
-2. Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
-3. Build API endpoints for weekly planning (generate, template switching)
-4. Set up frontend foundation (Next.js + PWA)
-5. Build Today View (mobile-first, primary screen)
-6. Build completion tracking UI with status selection
-7. Implement CSV meal import functionality
-8. Build Week View (overview and template switching)
-9. Build Meals Library (CRUD for meals)
-10. Build Setup screens (Meal Types, Day Templates, Week Plans)
-11. Implement offline support (service worker, cache strategy)
-12. Build Stats view (adherence, streaks)
-13. Seed initial data (Meal Types, Day Templates, Week Plan)
-14. End-to-end testing (daily flows, weekly generation)
-15. Deployment setup (Docker Compose production config)
+1. Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
+2. Build API endpoints for weekly planning (generate, template switching)
+3. Set up frontend foundation (Next.js + PWA)
+4. Build Today View (mobile-first, primary screen)
+5. Build completion tracking UI with status selection
+6. Implement CSV meal import functionality
+7. Build Week View (overview and template switching)
+8. Build Meals Library (CRUD for meals)
+9. Build Setup screens (Meal Types, Day Templates, Week Plans)
+10. Implement offline support (service worker, cache strategy)
+11. Build Stats view (adherence, streaks)
+12. Seed initial data (Meal Types, Day Templates, Week Plan)
+13. End-to-end testing (daily flows, weekly generation)
+14. Deployment setup (Docker Compose production config)
 
 ## Later (Backlog)
 
@@ -43,6 +42,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Implement round-robin meal selection algorithm (2026-01-22)
 - [x] Implement database schema and migrations (Alembic) (2026-01-20)
 - [x] Set up backend foundation (FastAPI + PostgreSQL + Docker) (2026-01-20)
 - [x] Set up project structure and development environment (2026-01-19)

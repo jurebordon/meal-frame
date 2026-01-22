@@ -5,6 +5,62 @@
 
 ---
 
+## Session: 2026-01-22
+
+**Role**: backend
+**Task**: Implement round-robin meal selection algorithm
+**Branch**: feat/round-robin
+
+### Summary
+- Implemented deterministic round-robin algorithm per Tech Spec section 3.1 and ADR-002
+- Created services/round_robin.py with core selection logic
+- Added peek function for previewing without advancing state
+- Added reset function for testing and state management
+- Set up pytest infrastructure with PostgreSQL integration tests
+- Wrote 25 comprehensive unit tests covering all algorithm properties
+- Also changed backend port from 8000 to 8003 (avoid local conflicts)
+
+### Files Changed
+- backend/app/services/round_robin.py (created - core algorithm)
+- backend/app/services/__init__.py (exports)
+- backend/requirements.txt (added pytest, pytest-asyncio, aiosqlite, httpx)
+- backend/pytest.ini (created - test configuration)
+- backend/tests/__init__.py (created)
+- backend/tests/conftest.py (created - fixtures and helpers)
+- backend/tests/test_round_robin.py (created - 25 tests)
+- docker-compose.yml (port 8000 → 8003)
+- .env.example (port note)
+- docs/ROADMAP.md (updated)
+- docs/SESSION_LOG.md (this entry)
+
+### Algorithm Details
+The round-robin algorithm:
+1. Orders meals by (created_at ASC, id ASC) for determinism
+2. Tracks last-used meal ID in round_robin_state table
+3. Returns next meal as (last_index + 1) % total_meals
+4. Handles edge cases: no meals (None), single meal (always return), deleted meal (reset to first)
+
+### Testing Performed
+- All 25 tests pass against PostgreSQL (Docker container)
+- Tests cover: ordering, rotation, wraparound, state tracking, edge cases
+- Tests verify determinism (same inputs → same outputs)
+- Tests verify fairness (all meals get equal turns)
+
+### Decisions
+- Used PostgreSQL for tests (SQLite doesn't support ARRAY type)
+- Tests use transaction rollback for isolation (fast, clean)
+- Added peek_next_meal_for_type for preview without side effects
+- Added reset_round_robin_state for testing purposes
+
+### Blockers
+- None
+
+### Next
+- Build Pydantic schemas for API requests/responses
+- Build API endpoints for daily use
+
+---
+
 ## Session: 2026-01-20 (2)
 
 **Role**: backend
