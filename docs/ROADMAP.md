@@ -1,18 +1,17 @@
 # Roadmap
 
 **Last Updated**: 2026-01-24
-**Current Phase**: MVP - Foundation
+**Current Phase**: MVP - Frontend Implementation
 
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Set up frontend foundation (Next.js + PWA)
+- [ ] Build Today View (mobile-first, primary screen)
 
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-1. Build Today View (mobile-first, primary screen)
-2. Build completion tracking UI with status selection
+1. Build completion tracking UI with status selection
 6. Implement CSV meal import functionality
 7. Build Week View (overview and template switching)
 8. Build Meals Library (CRUD for meals)
@@ -39,6 +38,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Set up frontend foundation with v0 design system (2026-01-24)
 - [x] Build API endpoints for weekly planning (generate, template switching) (2026-01-24)
 - [x] Build API endpoints for daily use (GET /today, POST /slots/{id}/complete) (2026-01-24)
 - [x] Build Pydantic schemas for API requests/responses (2026-01-24)

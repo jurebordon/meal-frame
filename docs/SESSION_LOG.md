@@ -5,6 +5,85 @@
 
 ---
 
+## Session: 2026-01-24 (4)
+
+**Role**: frontend
+**Task**: Set up frontend foundation with v0 design system
+**Branch**: feat/frontend-foundation
+
+### Summary
+- Migrated pre-built v0 design system (79 components) into frontend project
+- Set up Tailwind CSS with custom warm neutral design tokens
+- Configured TanStack Query for server state management
+- Created typed API client matching backend Pydantic schemas
+- Configured PWA with service worker caching strategies
+- All routes working, build passes, dev server runs
+
+### Files Changed
+- frontend/package.json (updated - all dependencies from v0_design)
+- frontend/tailwind.config.ts (created - custom design tokens)
+- frontend/postcss.config.js (created)
+- frontend/next.config.js (updated - PWA configuration)
+- frontend/public/manifest.json (updated - proper metadata)
+- frontend/public/icons/icon.svg (created - placeholder icon)
+- frontend/src/app/globals.css (created - Tailwind with safe areas)
+- frontend/src/app/layout.tsx (updated - providers, theme, metadata)
+- frontend/src/app/page.tsx (updated - demo of v0 components)
+- frontend/src/app/*/page.tsx (created - placeholder routes)
+- frontend/src/components/ui/* (56 files - Radix UI primitives)
+- frontend/src/components/mealframe/* (19 files - MealFrame components)
+- frontend/src/components/navigation/* (3 files - AppShell, BottomNav, Sidebar)
+- frontend/src/components/providers.tsx (created - Query + Theme providers)
+- frontend/src/components/theme-provider.tsx (copied from v0_design)
+- frontend/src/lib/api.ts (created - typed API client)
+- frontend/src/lib/types.ts (created - TypeScript types matching backend)
+- frontend/src/lib/queryClient.ts (created - TanStack Query setup)
+- frontend/src/lib/utils.ts (copied - cn utility)
+- frontend/src/hooks/use-mobile.ts (copied from v0_design)
+- frontend/src/hooks/use-toast.ts (copied from v0_design)
+- docs/ROADMAP.md (updated - task complete, design assets documented)
+- docs/SESSION_LOG.md (this entry)
+
+### Design Assets Integrated
+| Component Type | Count | Source |
+|---------------|-------|--------|
+| UI Primitives | 56 | v0_design/components/ui/ |
+| MealFrame Components | 19 | v0_design/components/mealframe/ |
+| Navigation | 3 | v0_design/components/navigation/ |
+| Hooks | 2 | v0_design/hooks/ |
+
+### Key Features
+- Dark mode by default with warm neutral palette
+- Safe area utilities for iOS notch/home indicator (Apple HIG compliant)
+- PWA disabled in development, enabled in production
+- API client with typed endpoints for all backend routes
+- TanStack Query with 5-minute stale time for meal data
+
+### Type Fix Applied
+- Fixed CompletionSheetAnimated onSelect type to use `Exclude<CompletionStatus, 'pending'>`
+- The v0 components included 'pending' in CompletionStatus but the callback correctly excludes it
+
+### Testing Performed
+- npm install: 807 packages installed
+- npm run build: Passes, generates 8 static pages
+- npm run dev: Dev server starts, components render correctly
+- Home page shows ProgressRing (3/5) and StreakBadge (4 days) correctly
+
+### Decisions
+- Used Tailwind v3 (stable) instead of v4 (from v0_design) for compatibility
+- Adapted globals.css from OKLCH to HSL color format for Tailwind v3
+- Used Inter font as fallback since Geist requires Google Fonts setup
+- Components copied directly, will adapt as we connect to real API
+
+### Blockers
+- None
+
+### Next
+- Build Today View (mobile-first, primary screen)
+- Connect to backend API with real data
+
+---
+
 ## Session: 2026-01-24 (3)
 
 **Role**: backend
