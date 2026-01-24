@@ -64,3 +64,22 @@
 - Reference tasks by ID in SESSION_LOG entries
 - MVP scope defined in docs/frozen/PRD_v0.md
 - Out-of-scope features deferred to "Later" section
+
+---
+
+## Design Assets
+
+Pre-built v0 design system in `v0_design/` folder:
+
+| Resource | Path | Description |
+|----------|------|-------------|
+| Design prompts | `docs/frozen/V0_DESIGN_PROMPTS.md` | Prompts used to generate v0 designs |
+| Apple HIG audit | `docs/frozen/V0_APPLE_COMPLIANCE_PROMPT.md` | Apple Human Interface Guidelines compliance |
+| Components (79) | `v0_design/components/` | Radix UI primitives + MealFrame components |
+| MealFrame components | `v0_design/components/mealframe/` | Domain-specific: MealCard, CompletionSheet, etc. |
+| UI primitives | `v0_design/components/ui/` | Button, Card, Sheet, Dialog, etc. |
+| Navigation | `v0_design/components/navigation/` | AppShell, BottomNav, Sidebar |
+| Pages | `v0_design/app/` | Today, Week, Library, Stats, Settings |
+| Global styles | `v0_design/app/globals.css` | Tailwind config with design tokens |
+
+**Usage**: Copy components and styles from `v0_design/` into `frontend/` when implementing UI features. Adapt imports and connect to real API data.
