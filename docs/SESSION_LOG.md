@@ -5,6 +5,66 @@
 
 ---
 
+## Session: 2026-01-24 (3)
+
+**Role**: backend
+**Task**: Build API endpoints for weekly planning (generate, template switching)
+**Branch**: feat/weekly-api
+
+### Summary
+- Implemented all 5 weekly planning API endpoints per Tech Spec section 4.4
+- Created service layer for week generation and template switching
+- Week generation uses existing round-robin algorithm for meal assignment
+- Added 20 new integration tests covering all endpoints and edge cases
+- All 60 tests pass (40 existing + 20 new)
+
+### Files Changed
+- backend/app/services/weekly.py (created - week generation, template switching, overrides)
+- backend/app/services/__init__.py (updated - export weekly service functions)
+- backend/app/api/weekly.py (created - 5 weekly planning API routes)
+- backend/app/api/__init__.py (updated - export weekly_router)
+- backend/app/main.py (updated - register weekly router)
+- backend/tests/test_weekly_api.py (created - 20 integration tests)
+- docs/ROADMAP.md (updated)
+- docs/SESSION_LOG.md (this entry)
+
+### Endpoints Implemented
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| /api/v1/weekly-plans/current | GET | Current week's plan with all days/slots |
+| /api/v1/weekly-plans/generate | POST | Generate new week via round-robin |
+| /api/v1/weekly-plans/current/days/{date}/template | PUT | Switch day's template |
+| /api/v1/weekly-plans/current/days/{date}/override | PUT | Mark day as "no plan" |
+| /api/v1/weekly-plans/current/days/{date}/override | DELETE | Remove override, restore plan |
+
+### Key Features
+- Week generation defaults to next Monday if no date provided
+- Template switching deletes existing slots and regenerates with new meals
+- Override functionality marks day as "no plan" and deletes slots
+- Clearing override restores plan using the day's original template
+- Validates week_start_date is a Monday
+- Validates target dates are within current week
+
+### Testing Performed
+- 20 new integration tests covering all endpoints
+- Tests for edge cases: no plan, conflict (409), invalid template, date not in week
+- Round-robin rotation verified across multiple weeks
+- All 60 tests pass
+
+### Decisions
+- Service layer pattern: business logic in services/weekly.py, routes thin
+- get_week_start_date reused from today service
+- Date validation happens at API layer before calling service functions
+
+### Blockers
+- None
+
+### Next
+- Set up frontend foundation (Next.js + PWA)
+- Build Today View (mobile-first, primary screen)
+
+---
+
 ## Session: 2026-01-24 (2)
 
 **Role**: backend
