@@ -1,19 +1,18 @@
 # Roadmap
 
-**Last Updated**: 2026-01-22
+**Last Updated**: 2026-01-24
 **Current Phase**: MVP - Foundation
 
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Build Pydantic schemas for API requests/responses
+- [ ] Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
 
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-1. Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
-2. Build API endpoints for weekly planning (generate, template switching)
-3. Set up frontend foundation (Next.js + PWA)
+1. Build API endpoints for weekly planning (generate, template switching)
+2. Set up frontend foundation (Next.js + PWA)
 4. Build Today View (mobile-first, primary screen)
 5. Build completion tracking UI with status selection
 6. Implement CSV meal import functionality
@@ -42,6 +41,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Build Pydantic schemas for API requests/responses (2026-01-24)
 - [x] Implement round-robin meal selection algorithm (2026-01-22)
 - [x] Implement database schema and migrations (Alembic) (2026-01-20)
 - [x] Set up backend foundation (FastAPI + PostgreSQL + Docker) (2026-01-20)

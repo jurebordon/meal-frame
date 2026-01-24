@@ -5,6 +5,65 @@
 
 ---
 
+## Session: 2026-01-24
+
+**Role**: backend
+**Task**: Build Pydantic schemas for API requests/responses
+**Branch**: feat/pydantic-schemas
+
+### Summary
+- Created comprehensive Pydantic schemas matching Tech Spec section 4 API contracts
+- Implemented 10 schema files covering all entities and API operations
+- Schemas support ORM serialization, JSON encoding, and validation
+- All existing tests still pass
+
+### Files Changed
+- backend/app/schemas/base.py (created - base config, ORM mode, JSON encoders)
+- backend/app/schemas/common.py (created - CompletionStatus enum, pagination, errors)
+- backend/app/schemas/meal_type.py (created - MealType CRUD schemas)
+- backend/app/schemas/meal.py (created - Meal CRUD + CSV import schemas)
+- backend/app/schemas/day_template.py (created - DayTemplate with slots)
+- backend/app/schemas/week_plan.py (created - WeekPlan with day mappings)
+- backend/app/schemas/weekly_plan.py (created - instance/day/slot schemas)
+- backend/app/schemas/today.py (created - TodayResponse with is_next, stats)
+- backend/app/schemas/stats.py (created - adherence statistics schemas)
+- backend/app/schemas/__init__.py (updated - export all schemas)
+- docs/ROADMAP.md (updated)
+- docs/SESSION_LOG.md (this entry)
+
+### Schema Organization
+| File | Purpose |
+|------|---------|
+| base.py | BaseSchema with from_attributes, JSON encoders |
+| common.py | CompletionStatus enum, Weekday enum, pagination, errors |
+| meal_type.py | Create/Update/Response + Compact variant |
+| meal.py | Full CRUD + MealImportRow for CSV import |
+| day_template.py | Template + slots with position ordering |
+| week_plan.py | Week structure with weekday→template mapping |
+| weekly_plan.py | Generated instances, slots, completion tracking |
+| today.py | TodayResponse with is_next indicator and stats |
+| stats.py | Adherence rates, streaks, meal type breakdown |
+
+### Decisions
+- Used `from_attributes=True` (Pydantic v2) instead of deprecated `orm_mode`
+- Decimal type for macro values (protein_g, etc.) to match database precision
+- Compact variants for nested responses to avoid circular dependencies
+- `is_next` computed at API layer, not stored in database
+
+### Testing Performed
+- Verified all schemas import without errors
+- All 25 existing round-robin tests pass
+- No circular import issues
+
+### Blockers
+- None
+
+### Next
+- Build API endpoints for daily use (GET /today, POST /slots/{id}/complete)
+- Build API endpoints for weekly planning
+
+---
+
 ## Session: 2026-01-22
 
 **Role**: backend
