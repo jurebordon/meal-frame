@@ -12,7 +12,6 @@
 
 <!-- Priority ordered - top item is next -->
 1. Implement CSV meal import functionality
-1. Implement CSV meal import functionality
 2. Build Meals Library (CRUD for meals)
 3. Build Setup screens (Meal Types, Day Templates, Week Plans)
 4. Implement offline support (service worker, cache strategy)
