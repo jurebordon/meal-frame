@@ -5,6 +5,42 @@
 
 ---
 
+## Session: 2026-01-26 (5)
+
+**Role**: fullstack
+**Task**: Build Meals Library (CRUD for meals)
+**Branch**: feat/meals-library-crud
+
+### Summary
+- Added 5 CRUD backend endpoints: GET /meals (paginated, search, type filter), GET /meals/{id}, POST /meals, PUT /meals/{id}, DELETE /meals/{id}
+- Service layer: list_meals, get_meal_by_id, create_meal, update_meal, delete_meal in meals.py
+- Wrote 16 integration tests covering all CRUD operations, pagination, search, type filtering, validation errors, and 404s
+- Updated frontend API client getMeals() to support search and meal_type_id params
+- Created useMeals, useCreateMeal, useUpdateMeal, useDeleteMeal TanStack Query hooks
+- Created useMealTypes hook for dynamic meal type loading
+- Rewrote MealEditor component to use real API types with dynamic meal types (fetched from GET /meal-types)
+- Built full Meals Library page with search bar, meal type filter dropdown, meal list cards, create/edit/delete via modal, and CSV import integration
+
+### Files Changed
+- backend/app/services/meals.py (updated — added CRUD service functions)
+- backend/app/services/__init__.py (updated — export new functions)
+- backend/app/api/meals.py (updated — added GET/POST/PUT/DELETE route handlers)
+- backend/tests/test_meal_crud.py (created — 16 integration tests)
+- frontend/src/lib/api.ts (updated — getMeals now accepts search/mealTypeId)
+- frontend/src/hooks/use-meals.ts (created — TanStack Query hooks for meal CRUD)
+- frontend/src/hooks/use-meal-types.ts (created — TanStack Query hook for meal types)
+- frontend/src/components/mealframe/meal-editor.tsx (updated — real API types, dynamic meal types)
+- frontend/src/app/meals/page.tsx (rewritten — full library UI with search, filter, CRUD)
+- docs/ROADMAP.md (updated — task marked done, next task promoted)
+
+### Decisions
+- Offset-based pagination (matches existing PaginatedResponse schema)
+- Search by meal name only (ilike, case-insensitive)
+- Meal type filter uses real IDs from GET /meal-types endpoint
+- Macros made optional in editor (no longer required, matching backend schema)
+
+---
+
 ## Session: 2026-01-26 (4)
 
 **Role**: fullstack
