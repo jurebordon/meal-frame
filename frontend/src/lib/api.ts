@@ -30,6 +30,9 @@ import type {
   DayTemplateUpdate,
   DayTemplateListItem,
   WeekPlanResponse,
+  WeekPlanCreate,
+  WeekPlanUpdate,
+  WeekPlanListItem,
   PaginatedResponse,
   ErrorResponse,
 } from './types'
@@ -396,8 +399,8 @@ export async function deleteDayTemplate(id: string): Promise<void> {
 /**
  * List all week plans.
  */
-export async function getWeekPlans(): Promise<WeekPlanResponse[]> {
-  return fetchApi<WeekPlanResponse[]>('/week-plans')
+export async function getWeekPlans(): Promise<WeekPlanListItem[]> {
+  return fetchApi<WeekPlanListItem[]>('/week-plans')
 }
 
 /**
@@ -405,6 +408,49 @@ export async function getWeekPlans(): Promise<WeekPlanResponse[]> {
  */
 export async function getWeekPlan(id: string): Promise<WeekPlanResponse> {
   return fetchApi<WeekPlanResponse>(`/week-plans/${id}`)
+}
+
+/**
+ * Create a new week plan.
+ */
+export async function createWeekPlan(
+  request: WeekPlanCreate
+): Promise<WeekPlanResponse> {
+  return fetchApi<WeekPlanResponse>('/week-plans', {
+    method: 'POST',
+    body: JSON.stringify(request),
+  })
+}
+
+/**
+ * Update a week plan.
+ */
+export async function updateWeekPlan(
+  id: string,
+  request: WeekPlanUpdate
+): Promise<WeekPlanResponse> {
+  return fetchApi<WeekPlanResponse>(`/week-plans/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(request),
+  })
+}
+
+/**
+ * Delete a week plan.
+ */
+export async function deleteWeekPlan(id: string): Promise<void> {
+  return fetchApi<void>(`/week-plans/${id}`, {
+    method: 'DELETE',
+  })
+}
+
+/**
+ * Set a week plan as the default.
+ */
+export async function setDefaultWeekPlan(id: string): Promise<WeekPlanResponse> {
+  return fetchApi<WeekPlanResponse>(`/week-plans/${id}/set-default`, {
+    method: 'POST',
+  })
 }
 
 // Convenience object for importing all API functions
@@ -447,6 +493,10 @@ export const api = {
   // Week Plans
   getWeekPlans,
   getWeekPlan,
+  createWeekPlan,
+  updateWeekPlan,
+  deleteWeekPlan,
+  setDefaultWeekPlan,
 }
 
 export default api

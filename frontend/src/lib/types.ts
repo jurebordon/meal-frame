@@ -175,6 +175,7 @@ export interface WeekPlanCompact {
 export interface WeekPlanDayResponse {
   id: string
   weekday: Weekday
+  weekday_name: string
   day_template: DayTemplateCompact
 }
 
@@ -185,6 +186,30 @@ export interface WeekPlanResponse {
   created_at: string
   updated_at: string
   days: WeekPlanDayResponse[]
+}
+
+export interface WeekPlanListItem {
+  id: string
+  name: string
+  is_default: boolean
+  day_count: number
+}
+
+export interface WeekPlanDayCreate {
+  weekday: Weekday
+  day_template_id: string
+}
+
+export interface WeekPlanCreate {
+  name: string
+  is_default?: boolean
+  days?: WeekPlanDayCreate[]
+}
+
+export interface WeekPlanUpdate {
+  name?: string
+  is_default?: boolean
+  days?: WeekPlanDayCreate[]
 }
 
 // ============================================================================

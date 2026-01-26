@@ -1,57 +1,84 @@
 'use client'
 
-import React from "react"
-import { Trash2 } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { X, Trash2 } from 'lucide-react'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { X } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
-export interface MealType {
-  id: string
-  name: string
-  description: string
-  tags: string[]
-  assignedMealCount: number
-}
+import type { MealTypeWithCount, MealTypeCreate } from '@/lib/types'
 
 interface MealTypeEditorProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  mealType?: MealType
-  onSave: (mealType: Omit<MealType, 'id' | 'assignedMealCount'>) => void
+  mealType?: MealTypeWithCount | null
+  onSave: (data: MealTypeCreate) => void
   onDelete?: (id: string) => void
+  isSaving?: boolean
 }
 
-export function MealTypeEditor({ open, onOpenChange, mealType, onSave, onDelete }: MealTypeEditorProps) {
-  const [name, setName] = useState(mealType?.name || '')
-  const [description, setDescription] = useState(mealType?.description || '')
-  const [tags, setTags] = useState<string[]>(mealType?.tags || [])
+export function MealTypeEditor({
+  open,
+  onOpenChange,
+  mealType,
+  onSave,
+  onDelete,
+  isSaving,
+}: MealTypeEditorProps) {
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
+  const isEditing = !!mealType
+
+  // Reset form state when the dialog opens or mealType changes
+  useEffect(() => {
+    if (open) {
+      setName(mealType?.name ?? '')
+      setDescription(mealType?.description ?? '')
+      setTags(mealType?.tags ?? [])
+      setTagInput('')
+      setShowDeleteConfirm(false)
+    }
+  }, [open, mealType])
+
   const handleSave = () => {
-    if (!name.trim()) return
-    onSave({ name, description, tags })
-    onOpenChange(false)
+    const trimmedName = name.trim()
+    if (!trimmedName) return
+
+    const data: MealTypeCreate = {
+      name: trimmedName,
+      description: description.trim() || null,
+      tags,
+    }
+
+    onSave(data)
   }
 
   const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()])
+    const trimmed = tagInput.trim()
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed])
       setTagInput('')
     }
   }
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag))
+    setTags(tags.filter((t) => t !== tag))
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       handleAddTag()
@@ -61,23 +88,26 @@ export function MealTypeEditor({ open, onOpenChange, mealType, onSave, onDelete 
   const handleDelete = () => {
     if (mealType && onDelete) {
       onDelete(mealType.id)
-      onOpenChange(false)
     }
   }
+
+  const canDelete = isEditing && onDelete && mealType.meal_count === 0
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{mealType ? 'Edit Meal Type' : 'Add Meal Type'}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? 'Edit Meal Type' : 'Add Meal Type'}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="meal-type-name">Name</Label>
             <Input
-              id="name"
+              id="meal-type-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Breakfast, Lunch, Snack"
@@ -86,9 +116,9 @@ export function MealTypeEditor({ open, onOpenChange, mealType, onSave, onDelete 
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="meal-type-description">Description</Label>
             <Textarea
-              id="description"
+              id="meal-type-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe this meal type..."
@@ -98,13 +128,13 @@ export function MealTypeEditor({ open, onOpenChange, mealType, onSave, onDelete 
 
           {/* Tags */}
           <div className="space-y-2">
-            <Label htmlFor="tags">Tags</Label>
+            <Label htmlFor="meal-type-tags">Tags</Label>
             <div className="flex gap-2">
               <Input
-                id="tags"
+                id="meal-type-tags"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleKeyPress}
+                onKeyDown={handleTagKeyDown}
                 placeholder="Add tags (press Enter)"
               />
               <Button onClick={handleAddTag} variant="secondary" size="sm">
@@ -134,41 +164,66 @@ export function MealTypeEditor({ open, onOpenChange, mealType, onSave, onDelete 
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:gap-3">
-          {mealType && onDelete && showDeleteConfirm && (
+          {isEditing && onDelete && showDeleteConfirm && (
             <div className="flex w-full flex-col gap-2 sm:flex-1">
               <p className="text-sm text-muted-foreground">
                 Are you sure you want to delete this meal type?
               </p>
               <div className="flex gap-2">
-                <Button variant="destructive" onClick={handleDelete} size="sm" className="flex-1">
+                <Button
+                  variant="destructive"
+                  onClick={handleDelete}
+                  size="sm"
+                  className="flex-1"
+                >
                   Confirm Delete
                 </Button>
-                <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} size="sm" className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  size="sm"
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
               </div>
             </div>
           )}
-          {(!mealType || !onDelete || !showDeleteConfirm) && (
+
+          {(!isEditing || !onDelete || !showDeleteConfirm) && (
             <>
-              {mealType && onDelete && (
+              {isEditing && onDelete && (
                 <Button
                   variant="outline"
                   onClick={() => setShowDeleteConfirm(true)}
-                  disabled={mealType.assignedMealCount > 0}
+                  disabled={!canDelete}
                   size="sm"
                   className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                  title={mealType.assignedMealCount > 0 ? `Cannot delete: ${mealType.assignedMealCount} meals assigned` : 'Delete'}
+                  title={
+                    !canDelete
+                      ? `Cannot delete: ${mealType.meal_count} meal${mealType.meal_count === 1 ? '' : 's'} assigned`
+                      : 'Delete'
+                  }
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               )}
               <div className="flex flex-1 gap-2">
-                <Button variant="outline" onClick={() => onOpenChange(false)} size="sm" className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  size="sm"
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
-                <Button onClick={handleSave} disabled={!name.trim()} size="sm" className="flex-1">
-                  Save
+                <Button
+                  onClick={handleSave}
+                  disabled={!name.trim() || isSaving}
+                  size="sm"
+                  className="flex-1"
+                >
+                  {isSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </>
