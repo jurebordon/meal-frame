@@ -5,6 +5,75 @@
 
 ---
 
+## Session: 2026-01-26 (7)
+
+**Role**: frontend
+**Task**: Implement offline support (service worker, cache strategy)
+**Branch**: feat/offline-support
+
+### Summary
+- Generated PWA icons (192x192, 512x512, maskable variants, apple-touch) from existing SVG
+- Created `useOnlineStatus` hook using `useSyncExternalStore` for tear-free online/offline tracking
+- Built `OfflineBanner` component that shows "You're offline — showing cached data" when network is lost
+- Configured TanStack Query's `onlineManager` to pause/resume queries with connectivity changes
+- Set `networkMode: 'always'` on completion mutations so optimistic updates work offline
+- Built localStorage-backed offline queue that persists completion/uncomplete actions across app restarts
+- Added `useOfflineSync` hook that flushes queued actions when connectivity is restored
+- Updated `.gitignore` to exclude generated service worker files (sw.js, workbox-*.js, tsbuildinfo)
+- Updated layout metadata with proper icon references (PNG fallbacks + apple-touch-icon)
+
+### Files Changed
+**Frontend (new):**
+- frontend/src/hooks/use-online-status.ts (created — useSyncExternalStore-based online detection)
+- frontend/src/components/mealframe/offline-banner.tsx (created — offline indicator banner)
+- frontend/src/lib/offline-queue.ts (created — localStorage-backed completion sync queue)
+- frontend/public/icons/icon-192.png (generated from SVG)
+- frontend/public/icons/icon-512.png (generated from SVG)
+- frontend/public/icons/icon-maskable-192.png (generated from SVG)
+- frontend/public/icons/icon-maskable-512.png (generated from SVG)
+- frontend/public/icons/apple-touch-icon.png (generated from SVG)
+
+**Frontend (modified):**
+- frontend/src/app/layout.tsx (updated — OfflineBanner, icon metadata)
+- frontend/src/app/page.tsx (updated — useOfflineSync hook)
+- frontend/src/components/providers.tsx (updated — initOnlineManager on mount)
+- frontend/src/hooks/use-today.ts (updated — networkMode, offline queue enqueue, useOfflineSync)
+- frontend/src/lib/queryClient.ts (updated — onlineManager initialization)
+
+**Root:**
+- .gitignore (updated — exclude sw.js, workbox-*.js, tsbuildinfo)
+
+### Offline Support Architecture
+| Layer | Strategy | Details |
+|-------|----------|---------|
+| App Shell | Precache (Workbox) | HTML, CSS, JS, icons precached on install |
+| /today API | NetworkFirst (10s timeout) | Falls back to cached response when offline |
+| Other APIs | StaleWhileRevalidate | Cached 24h, revalidated when possible |
+| Static Assets | CacheFirst | 30-day cache for JS, CSS, fonts, images |
+| Completion Actions | Optimistic + Queue | Immediate UI update, localStorage queue for sync |
+| Online Detection | useSyncExternalStore | Tear-free reads of navigator.onLine + events |
+
+### Decisions
+- Used `useSyncExternalStore` for online status (React 18+ recommended pattern, avoids tearing)
+- Completion-only offline queue (setup screens are desktop workflows, not needed offline)
+- Last-action-wins deduplication in queue (if user completes then uncompletes same slot offline, only last action is sent)
+- `networkMode: 'always'` instead of `'offlineFirst'` — fires mutation immediately, enqueues on network error
+- OfflineBanner placed above AppShell in layout (visible on all pages, not affected by scroll)
+
+### Testing Performed
+- npm run build: Passes, 8 static pages generated
+- Service worker precache includes all icon files
+- No TypeScript errors
+- All changes contained to frontend (no backend changes needed)
+
+### Blockers
+- None
+
+### Next
+- Build Stats view (adherence, streaks)
+
+---
+
 ## Session: 2026-01-26 (6)
 
 **Role**: fullstack
