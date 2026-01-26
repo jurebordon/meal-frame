@@ -5,7 +5,28 @@
  * for managing server state across the application.
  */
 
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, onlineManager } from '@tanstack/react-query'
+
+/**
+ * Initialize TanStack Query's online manager.
+ * By default it listens to navigator.onLine + online/offline events
+ * and pauses queries/mutations when offline.
+ */
+export function initOnlineManager() {
+  // onlineManager is initialized automatically by TanStack Query,
+  // but we call this to ensure it's set up early in the app lifecycle.
+  // It will pause refetches when offline and resume when back online.
+  onlineManager.setEventListener((setOnline) => {
+    const onlineHandler = () => setOnline(true)
+    const offlineHandler = () => setOnline(false)
+    window.addEventListener('online', onlineHandler)
+    window.addEventListener('offline', offlineHandler)
+    return () => {
+      window.removeEventListener('online', onlineHandler)
+      window.removeEventListener('offline', offlineHandler)
+    }
+  })
+}
 
 /**
  * Create a new QueryClient with default options.

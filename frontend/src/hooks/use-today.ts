@@ -1,7 +1,10 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getToday, completeSlot, uncompleteSlot } from '@/lib/api'
+import { enqueueComplete, enqueueUncomplete, flushQueue } from '@/lib/offline-queue'
+import { useOnlineStatus } from '@/hooks/use-online-status'
 import type { TodayResponse, CompletionStatus } from '@/lib/types'
 
 export function useToday() {
@@ -12,12 +15,34 @@ export function useToday() {
   })
 }
 
+/**
+ * Hook that flushes the offline queue when connectivity is restored.
+ * Should be used once at the top level of the Today View.
+ */
+export function useOfflineSync() {
+  const isOnline = useOnlineStatus()
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (isOnline) {
+      flushQueue().then((synced) => {
+        if (synced > 0) {
+          // Refetch today data to get server-authoritative state
+          queryClient.invalidateQueries({ queryKey: ['today'] })
+        }
+      })
+    }
+  }, [isOnline, queryClient])
+}
+
 export function useCompleteSlot() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({ slotId, status }: { slotId: string; status: CompletionStatus }) =>
       completeSlot(slotId, { status }),
+    // Allow mutation to fire even when offline (for optimistic update)
+    networkMode: 'always',
     onMutate: async ({ slotId, status }) => {
       await queryClient.cancelQueries({ queryKey: ['today'] })
 
@@ -57,13 +82,22 @@ export function useCompleteSlot() {
 
       return { previous }
     },
-    onError: (_err, _vars, context) => {
+    onError: (_err, { slotId, status }, context) => {
+      // Network failure: enqueue for later sync, keep optimistic update
+      if (!navigator.onLine) {
+        enqueueComplete(slotId, status)
+        return
+      }
+      // Server error while online: rollback
       if (context?.previous) {
         queryClient.setQueryData(['today'], context.previous)
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['today'] })
+      // Only refetch if online
+      if (navigator.onLine) {
+        queryClient.invalidateQueries({ queryKey: ['today'] })
+      }
     },
   })
 }
@@ -73,6 +107,7 @@ export function useUncompleteSlot() {
 
   return useMutation({
     mutationFn: (slotId: string) => uncompleteSlot(slotId),
+    networkMode: 'always',
     onMutate: async (slotId) => {
       await queryClient.cancelQueries({ queryKey: ['today'] })
 
@@ -112,13 +147,19 @@ export function useUncompleteSlot() {
 
       return { previous }
     },
-    onError: (_err, _vars, context) => {
+    onError: (_err, slotId, context) => {
+      if (!navigator.onLine) {
+        enqueueUncomplete(slotId)
+        return
+      }
       if (context?.previous) {
         queryClient.setQueryData(['today'], context.previous)
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['today'] })
+      if (navigator.onLine) {
+        queryClient.invalidateQueries({ queryKey: ['today'] })
+      }
     },
   })
 }

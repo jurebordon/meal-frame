@@ -9,7 +9,7 @@ import { CompletionAnimation } from '@/components/mealframe/completion-animation
 import { Toast } from '@/components/mealframe/toast'
 import { Button } from '@/components/ui/button'
 import { Loader2, RefreshCw, Calendar } from 'lucide-react'
-import { useToday, useCompleteSlot, useUncompleteSlot } from '@/hooks/use-today'
+import { useToday, useCompleteSlot, useUncompleteSlot, useOfflineSync } from '@/hooks/use-today'
 import type { CompletionStatus, WeeklyPlanSlotWithNext } from '@/lib/types'
 import Link from 'next/link'
 
@@ -17,6 +17,7 @@ export default function TodayView() {
   const { data, isLoading, isError, error, refetch } = useToday()
   const completeSlotMutation = useCompleteSlot()
   const uncompleteSlotMutation = useUncompleteSlot()
+  useOfflineSync()
 
   const [showCompletionSheet, setShowCompletionSheet] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState<WeeklyPlanSlotWithNext | null>(null)
