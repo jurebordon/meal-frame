@@ -21,6 +21,9 @@
 - Added `useOfflineSync` hook that flushes queued actions when connectivity is restored
 - Updated `.gitignore` to exclude generated service worker files (sw.js, workbox-*.js, tsbuildinfo)
 - Updated layout metadata with proper icon references (PNG fallbacks + apple-touch-icon)
+- Fixed: Added missing `python-multipart` dependency (backend crashed on startup)
+- Fixed: Navigation links pointed to wrong routes (`/library` → `/meals`, `/settings` → `/setup`)
+- Fixed: `NEXT_PUBLIC_API_URL` in docker-compose.yml was missing `/api/v1` suffix
 
 ### Files Changed
 **Frontend (new):**
@@ -39,9 +42,15 @@
 - frontend/src/components/providers.tsx (updated — initOnlineManager on mount)
 - frontend/src/hooks/use-today.ts (updated — networkMode, offline queue enqueue, useOfflineSync)
 - frontend/src/lib/queryClient.ts (updated — onlineManager initialization)
+- frontend/src/components/navigation/bottom-nav.tsx (fixed — /library → /meals, /settings → /setup)
+- frontend/src/components/navigation/sidebar.tsx (fixed — /library → /meals, /settings → /setup)
+
+**Backend (modified):**
+- backend/requirements.txt (added python-multipart dependency)
 
 **Root:**
 - .gitignore (updated — exclude sw.js, workbox-*.js, tsbuildinfo)
+- docker-compose.yml (fixed — NEXT_PUBLIC_API_URL now includes /api/v1)
 
 ### Offline Support Architecture
 | Layer | Strategy | Details |
@@ -64,7 +73,8 @@
 - npm run build: Passes, 8 static pages generated
 - Service worker precache includes all icon files
 - No TypeScript errors
-- All changes contained to frontend (no backend changes needed)
+- All Docker containers running and serving data
+- Backend tests: Pre-existing failure (tests connect to localhost:5436 which isn't reachable from inside Docker container — tests must be run from host)
 
 ### Blockers
 - None
