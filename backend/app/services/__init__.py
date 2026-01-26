@@ -10,7 +10,12 @@ from .round_robin import (
 )
 
 from .meals import (
+    create_meal,
+    delete_meal,
+    get_meal_by_id,
     import_meals_from_csv,
+    list_meals,
+    update_meal,
 )
 
 from .weekly import (
@@ -28,7 +33,12 @@ from .weekly import (
 
 __all__ = [
     # Meals
+    "create_meal",
+    "delete_meal",
+    "get_meal_by_id",
     "import_meals_from_csv",
+    "list_meals",
+    "update_meal",
     # Round-robin
     "get_meals_for_type",
     "get_next_meal_for_type",
