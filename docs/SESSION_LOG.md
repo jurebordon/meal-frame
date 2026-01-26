@@ -5,6 +5,58 @@
 
 ---
 
+## Session: 2026-01-26 (3)
+
+**Role**: fullstack
+**Task**: Build Week View (overview and template switching)
+**Branch**: feat/week-view
+
+### Summary
+- Built the Week View page at `/week` with full API integration
+- Added `GET /api/v1/day-templates` backend endpoint for the TemplatePicker modal
+- Created TanStack Query hooks for weekly plan data and day template listing
+- Connected v0 design components (DayCardExpandable, TemplatePicker) to real API types
+- All UI states implemented: loading, empty (no plan with generate CTA), error, populated week
+
+### Files Changed
+- backend/app/api/day_templates.py (created - GET /day-templates list endpoint)
+- backend/app/api/__init__.py (updated - register day_templates_router)
+- backend/app/main.py (updated - register day_templates_router)
+- frontend/src/hooks/use-week.ts (created - useCurrentWeek, useGenerateWeek, useSwitchTemplate, useSetOverride, useClearOverride)
+- frontend/src/hooks/use-day-templates.ts (created - useDayTemplates hook)
+- frontend/src/app/week/page.tsx (rewritten - full Week View with API integration)
+- frontend/src/components/mealframe/template-picker.tsx (updated - allow empty reason for No Plan)
+- docs/ROADMAP.md (updated - task complete, promoted CSV import to Now)
+- docs/SESSION_LOG.md (this entry)
+
+### Key Features
+- Week header with date range and "Generate Next Week" button
+- 7 expandable day cards showing template name, meals, progress bar, completion badges
+- Today highlighted with badge and ring, past days muted
+- Override days show "No Plan" with optional reason
+- Template switching via TemplatePicker modal with confirmation when meals are completed
+- Empty state with prominent "Generate Week" CTA when no plan exists
+- Error state with message display
+- Mutations invalidate both `currentWeek` and `today` query caches
+
+### Decisions
+- Added backend `GET /day-templates` endpoint (frontend API client already defined it but backend didn't serve it)
+- Mapped API types to v0 component props in the page (not in components) to keep v0 components reusable
+- Removed the week navigation arrows from v0 design (only current week is relevant for MVP)
+- Fixed TemplatePicker to allow empty reason for "No Plan" (API allows it, UI was blocking it)
+
+### Testing Performed
+- npm run build: Passes, 8 static pages generated (including /week at 6.42 kB)
+- All component types align correctly (no TypeScript errors)
+
+### Blockers
+- None
+
+### Next
+- Implement CSV meal import functionality
+
+---
+
 ## Session: 2026-01-26 (2)
 
 **Role**: backend

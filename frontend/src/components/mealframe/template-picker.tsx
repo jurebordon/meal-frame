@@ -65,12 +65,10 @@ export function TemplatePicker({
   }
 
   const handleNoPlanSubmit = () => {
-    if (noPlanReason.trim()) {
-      onSelectNoPlan(noPlanReason.trim())
-      setShowNoPlanInput(false)
-      setNoPlanReason('')
-      onOpenChange(false)
-    }
+    onSelectNoPlan(noPlanReason.trim())
+    setShowNoPlanInput(false)
+    setNoPlanReason('')
+    onOpenChange(false)
   }
 
   if (!open) return null
