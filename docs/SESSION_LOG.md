@@ -5,6 +5,93 @@
 
 ---
 
+## Session: 2026-01-26 (6)
+
+**Role**: fullstack
+**Task**: Build Setup screens (Meal Types, Day Templates, Week Plans)
+**Branch**: feat/setup-screens
+
+### Summary
+- Built full CRUD backends for all three setup entities (Meal Types, Day Templates, Week Plans)
+- Created service layers with proper async SQLAlchemy patterns (expunge+reload for relationship updates)
+- Expanded Day Templates API from GET-only to full CRUD
+- Created new Meal Types and Week Plans API routers with registration in main.py
+- Wrote 37 integration tests covering all CRUD operations for all three entities
+- Built three-tab Setup page at `/setup` with live data from API
+- Created/adapted editor components for all three entities with proper form reset, isSaving state, and delete confirmation
+- Built new Week Plan editor component from scratch (weekday-to-template mapping)
+- Added missing TypeScript types, API functions, and TanStack Query hooks with mutations
+
+### Files Changed
+**Backend (new):**
+- backend/app/services/meal_types.py (created — CRUD service)
+- backend/app/services/day_templates.py (created — CRUD service with slot replacement)
+- backend/app/services/week_plans.py (created — CRUD service with day replacement + set-default)
+- backend/app/api/meal_types.py (created — 5 CRUD endpoints)
+- backend/app/api/week_plans.py (created — 6 endpoints including set-default)
+- backend/tests/test_meal_type_crud.py (created — 12 tests)
+- backend/tests/test_day_template_crud.py (created — 12 tests)
+- backend/tests/test_week_plan_crud.py (created — 13 tests)
+
+**Backend (modified):**
+- backend/app/api/day_templates.py (expanded — full CRUD via service layer)
+- backend/app/api/__init__.py (updated — register new routers)
+- backend/app/main.py (updated — include new routers)
+- backend/app/services/__init__.py (updated — export new services)
+
+**Frontend (new):**
+- frontend/src/hooks/use-week-plans.ts (created — 6 TanStack Query hooks)
+- frontend/src/components/mealframe/week-plan-editor.tsx (created — weekday mapping editor)
+
+**Frontend (modified):**
+- frontend/src/lib/types.ts (updated — WeekPlanListItem, WeekPlanCreate, WeekPlanUpdate, WeekPlanDayCreate, weekday_name)
+- frontend/src/lib/api.ts (updated — createWeekPlan, updateWeekPlan, deleteWeekPlan, setDefaultWeekPlan)
+- frontend/src/hooks/use-meal-types.ts (expanded — CRUD mutations)
+- frontend/src/hooks/use-day-templates.ts (expanded — CRUD mutations, detail query)
+- frontend/src/components/mealframe/meal-type-editor.tsx (rewritten — real API types)
+- frontend/src/components/mealframe/day-template-editor.tsx (rewritten — real API types)
+- frontend/src/app/setup/page.tsx (rewritten — 3-tab setup with full CRUD)
+
+### Endpoints Implemented
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| /api/v1/meal-types | GET | List meal types with counts |
+| /api/v1/meal-types/{id} | GET | Get single meal type |
+| /api/v1/meal-types | POST | Create meal type |
+| /api/v1/meal-types/{id} | PUT | Update meal type |
+| /api/v1/meal-types/{id} | DELETE | Delete meal type |
+| /api/v1/day-templates/{id} | GET | Get single template with slots |
+| /api/v1/day-templates | POST | Create template with slots |
+| /api/v1/day-templates/{id} | PUT | Update template (replace slots) |
+| /api/v1/day-templates/{id} | DELETE | Delete template |
+| /api/v1/week-plans | GET | List week plans with day counts |
+| /api/v1/week-plans/{id} | GET | Get plan with day mappings |
+| /api/v1/week-plans | POST | Create week plan |
+| /api/v1/week-plans/{id} | PUT | Update week plan |
+| /api/v1/week-plans/{id} | DELETE | Delete week plan |
+| /api/v1/week-plans/{id}/set-default | POST | Set as default plan |
+
+### Decisions
+- Used expunge+reload pattern for async SQLAlchemy relationship updates (expire causes MissingGreenlet with lazy loading)
+- Editor components don't close dialog on save — parent controls close via mutation onSuccess callback
+- Day Template and Week Plan editors fetch full detail via separate GET when editing (list endpoints return compact data)
+- Week Plan editor uses sentinel value "__none__" for unassigned weekdays (Radix Select doesn't support empty string)
+- Delete buttons disabled when entity is in use (meal types with assigned meals)
+
+### Testing Performed
+- 37 backend integration tests: all pass
+- npm run build: Passes, 8 static pages (setup at 37.3 kB)
+- No TypeScript errors
+- Pre-existing tests unaffected
+
+### Blockers
+- None
+
+### Next
+- Implement offline support (service worker, cache strategy)
+
+---
+
 ## Session: 2026-01-26 (5)
 
 **Role**: fullstack

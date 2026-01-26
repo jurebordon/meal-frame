@@ -6,15 +6,14 @@
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Build Setup screens (Meal Types, Day Templates, Week Plans)
+- [ ] Implement offline support (service worker, cache strategy)
 
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-1. Implement offline support (service worker, cache strategy)
-2. Build Stats view (adherence, streaks)
-3. End-to-end testing (daily flows, weekly generation)
-4. Deployment setup (Docker Compose production config)
+1. Build Stats view (adherence, streaks)
+2. End-to-end testing (daily flows, weekly generation)
+3. Deployment setup (Docker Compose production config)
 
 ## Later (Backlog)
 
@@ -32,6 +31,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Build Setup screens (Meal Types, Day Templates, Week Plans) with full CRUD (2026-01-26)
 - [x] Build Meals Library with full CRUD, search, and type filtering (2026-01-26)
 - [x] Implement CSV meal import functionality (2026-01-26)
 - [x] Build Week View with API integration and template switching (2026-01-26)
