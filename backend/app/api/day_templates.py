@@ -1,22 +1,39 @@
 """
 API routes for day template endpoints.
 
-Provides a list endpoint for the TemplatePicker in the Week View.
+Provides full CRUD operations for day templates.
+Per Tech Spec section 4.5 (Setup/Admin Endpoints).
 """
-from sqlalchemy import select
+import logging
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends
 
 from ..database import get_db
-from ..models.day_template import DayTemplate, DayTemplateSlot
-from ..models.meal_type import MealType
-from ..schemas.day_template import DayTemplateListItem
+from ..schemas.day_template import (
+    DayTemplateCreate,
+    DayTemplateListItem,
+    DayTemplateResponse,
+    DayTemplateSlotResponse,
+    DayTemplateUpdate,
+)
+from ..schemas.meal_type import MealTypeCompact
+from ..services.day_templates import (
+    create_day_template,
+    delete_day_template,
+    get_day_template_by_id,
+    list_day_templates,
+    update_day_template,
+)
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/day-templates", tags=["Day Templates"])
 
 
 @router.get("", response_model=list[DayTemplateListItem])
-async def list_day_templates(
+async def get_day_templates(
     db: AsyncSession = Depends(get_db),
 ) -> list[DayTemplateListItem]:
     """
@@ -26,30 +43,94 @@ async def list_day_templates(
     - slot_count: Number of meal slots
     - slot_preview: Arrow-separated meal type names (e.g., "Breakfast → Lunch → Dinner")
     """
-    result = await db.execute(
-        select(DayTemplate).order_by(DayTemplate.name)
-    )
-    templates = result.scalars().all()
+    rows = await list_day_templates(db)
 
-    items = []
-    for template in templates:
-        # Get meal type names ordered by slot position
-        mt_result = await db.execute(
-            select(MealType.name)
-            .join(DayTemplateSlot, DayTemplateSlot.meal_type_id == MealType.id)
-            .where(DayTemplateSlot.day_template_id == template.id)
-            .order_by(DayTemplateSlot.position)
+    return [
+        DayTemplateListItem(
+            id=row["template"].id,
+            name=row["template"].name,
+            notes=row["template"].notes,
+            slot_count=row["slot_count"],
+            slot_preview=row["slot_preview"],
         )
-        meal_type_names = [row[0] for row in mt_result.all()]
+        for row in rows
+    ]
 
-        items.append(
-            DayTemplateListItem(
-                id=template.id,
-                name=template.name,
-                notes=template.notes,
-                slot_count=len(meal_type_names),
-                slot_preview=" → ".join(meal_type_names) if meal_type_names else None,
+
+@router.get("/{template_id}", response_model=DayTemplateResponse)
+async def get_day_template(
+    template_id: UUID,
+    db: AsyncSession = Depends(get_db),
+) -> DayTemplateResponse:
+    """Get a single day template by ID with full slot details."""
+    template = await get_day_template_by_id(db, template_id)
+    if template is None:
+        raise HTTPException(status_code=404, detail="Day template not found")
+
+    return _template_to_response(template)
+
+
+@router.post("", response_model=DayTemplateResponse, status_code=201)
+async def create_day_template_endpoint(
+    data: DayTemplateCreate,
+    db: AsyncSession = Depends(get_db),
+) -> DayTemplateResponse:
+    """Create a new day template with ordered meal type slots."""
+    template = await create_day_template(db, data)
+    return _template_to_response(template)
+
+
+@router.put("/{template_id}", response_model=DayTemplateResponse)
+async def update_day_template_endpoint(
+    template_id: UUID,
+    data: DayTemplateUpdate,
+    db: AsyncSession = Depends(get_db),
+) -> DayTemplateResponse:
+    """Update an existing day template. Providing slots replaces all existing slots."""
+    template = await get_day_template_by_id(db, template_id)
+    if template is None:
+        raise HTTPException(status_code=404, detail="Day template not found")
+
+    updated = await update_day_template(db, template, data)
+    return _template_to_response(updated)
+
+
+@router.delete("/{template_id}", status_code=204)
+async def delete_day_template_endpoint(
+    template_id: UUID,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Delete a day template. Fails if used by week plans."""
+    template = await get_day_template_by_id(db, template_id)
+    if template is None:
+        raise HTTPException(status_code=404, detail="Day template not found")
+
+    try:
+        await delete_day_template(db, template)
+    except Exception:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot delete day template that is used by week plans",
+        )
+
+
+def _template_to_response(template) -> DayTemplateResponse:
+    """Convert a DayTemplate ORM object to a response schema."""
+    return DayTemplateResponse(
+        id=template.id,
+        name=template.name,
+        notes=template.notes,
+        created_at=template.created_at,
+        updated_at=template.updated_at,
+        slots=[
+            DayTemplateSlotResponse(
+                id=slot.id,
+                position=slot.position,
+                meal_type=MealTypeCompact(
+                    id=slot.meal_type.id,
+                    name=slot.meal_type.name,
+                ),
             )
-        )
-
-    return items
+            for slot in sorted(template.slots, key=lambda s: s.position)
+        ],
+    )

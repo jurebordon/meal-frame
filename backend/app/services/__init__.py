@@ -31,6 +31,31 @@ from .weekly import (
     get_week_start_date,
 )
 
+from .meal_types import (
+    create_meal_type,
+    delete_meal_type,
+    get_meal_type_by_id,
+    list_meal_types,
+    update_meal_type,
+)
+
+from .day_templates import (
+    create_day_template,
+    delete_day_template,
+    get_day_template_by_id,
+    list_day_templates,
+    update_day_template,
+)
+
+from .week_plans import (
+    create_week_plan,
+    delete_week_plan,
+    get_week_plan_by_id,
+    list_week_plans,
+    set_default_week_plan,
+    update_week_plan,
+)
+
 __all__ = [
     # Meals
     "create_meal",
@@ -57,4 +82,23 @@ __all__ = [
     "clear_day_override",
     "is_date_in_week",
     "get_week_start_date",
+    # Meal types
+    "create_meal_type",
+    "delete_meal_type",
+    "get_meal_type_by_id",
+    "list_meal_types",
+    "update_meal_type",
+    # Day templates
+    "create_day_template",
+    "delete_day_template",
+    "get_day_template_by_id",
+    "list_day_templates",
+    "update_day_template",
+    # Week plans
+    "create_week_plan",
+    "delete_week_plan",
+    "get_week_plan_by_id",
+    "list_week_plans",
+    "set_default_week_plan",
+    "update_week_plan",
 ]
