@@ -9,6 +9,10 @@ from .round_robin import (
     update_round_robin_state,
 )
 
+from .meals import (
+    import_meals_from_csv,
+)
+
 from .weekly import (
     generate_weekly_plan,
     get_current_week_instance,
@@ -23,6 +27,8 @@ from .weekly import (
 )
 
 __all__ = [
+    # Meals
+    "import_meals_from_csv",
     # Round-robin
     "get_meals_for_type",
     "get_next_meal_for_type",

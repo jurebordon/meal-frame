@@ -36,6 +36,9 @@ from .meal import (
     MealCompact,
     MealListItem,
     MealImportRow,
+    MealImportWarning,
+    MealImportError,
+    MealImportSummary,
     MealImportResult,
 )
 
@@ -127,6 +130,9 @@ __all__ = [
     "MealCompact",
     "MealListItem",
     "MealImportRow",
+    "MealImportWarning",
+    "MealImportError",
+    "MealImportSummary",
     "MealImportResult",
     # DayTemplate
     "DayTemplateSlotBase",

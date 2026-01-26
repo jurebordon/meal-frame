@@ -113,12 +113,33 @@ class MealImportRow(BaseSchema):
         return v.strip() if v.strip() else None
 
 
-class MealImportResult(BaseSchema):
-    """Result of CSV meal import operation."""
+class MealImportWarning(BaseSchema):
+    """A warning from the CSV import process (non-fatal)."""
 
-    created_count: int = Field(description="Number of meals created")
-    updated_count: int = Field(description="Number of meals updated (if name exists)")
-    skipped_count: int = Field(description="Number of rows skipped due to errors")
-    errors: list[str] = Field(
-        default_factory=list, description="List of error messages for skipped rows"
-    )
+    row: int = Field(description="Row number (1-based, excluding header)")
+    message: str = Field(description="Warning message")
+
+
+class MealImportError(BaseSchema):
+    """An error from the CSV import process (row skipped)."""
+
+    row: int = Field(description="Row number (1-based, excluding header)")
+    message: str = Field(description="Error message")
+
+
+class MealImportSummary(BaseSchema):
+    """Summary counts for CSV import."""
+
+    total_rows: int = Field(description="Total rows processed")
+    created: int = Field(description="Number of meals created")
+    skipped: int = Field(description="Number of rows skipped due to errors")
+    warnings: int = Field(description="Number of warnings generated")
+
+
+class MealImportResult(BaseSchema):
+    """Result of CSV meal import operation per frozen spec MEAL_IMPORT_GUIDE.md."""
+
+    success: bool = Field(description="Whether the import completed (even if some rows had errors)")
+    summary: MealImportSummary
+    warnings: list[MealImportWarning] = Field(default_factory=list)
+    errors: list[MealImportError] = Field(default_factory=list)

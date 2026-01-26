@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import close_db, init_db
-from app.api import today_router, weekly_router, day_templates_router
+from app.api import today_router, weekly_router, day_templates_router, meals_router
 
 
 @asynccontextmanager
@@ -53,6 +53,7 @@ app.add_middleware(
 app.include_router(today_router)
 app.include_router(weekly_router)
 app.include_router(day_templates_router)
+app.include_router(meals_router)
 
 
 @app.get("/")
