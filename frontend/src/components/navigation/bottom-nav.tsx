@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { Home, Calendar, UtensilsCrossed, SlidersHorizontal, TrendingUp } from 'lucide-react'
 
 const navItems = [
-  { href: '/today', label: 'Today', icon: Home },
+  { href: '/', label: 'Today', icon: Home },
   { href: '/week', label: 'Week', icon: Calendar },
   { href: '/library', label: 'Meals', icon: UtensilsCrossed },
   { href: '/settings', label: 'Setup', icon: SlidersHorizontal },

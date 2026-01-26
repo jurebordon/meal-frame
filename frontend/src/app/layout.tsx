@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Providers } from '@/components/providers'
+import { AppShell } from '@/components/navigation/app-shell'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-geist-sans' })
@@ -47,7 +48,9 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>
-          {children}
+          <AppShell>
+            {children}
+          </AppShell>
         </Providers>
       </body>
     </html>

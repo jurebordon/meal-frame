@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
 const navItems = [
-  { href: '/today', label: 'Today', icon: Home },
+  { href: '/', label: 'Today', icon: Home },
   { href: '/week', label: 'Week', icon: Calendar },
   { href: '/library', label: 'Meals', icon: UtensilsCrossed },
   { href: '/settings', label: 'Setup', icon: SlidersHorizontal },
@@ -38,7 +38,7 @@ export function Sidebar() {
     <aside className="hidden h-screen w-64 flex-col border-r border-border bg-card md:flex">
       {/* Logo/Brand */}
       <div className="flex h-16 items-center border-b border-border px-6">
-        <Link href="/today" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
             <UtensilsCrossed className="h-5 w-5 text-primary" />
           </div>
