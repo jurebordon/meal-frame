@@ -56,6 +56,8 @@ from .week_plans import (
     update_week_plan,
 )
 
+from .stats import get_stats
+
 __all__ = [
     # Meals
     "create_meal",
@@ -101,4 +103,6 @@ __all__ = [
     "list_week_plans",
     "set_default_week_plan",
     "update_week_plan",
+    # Stats
+    "get_stats",
 ]

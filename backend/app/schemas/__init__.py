@@ -94,6 +94,7 @@ from .today import (
 
 # Stats schemas
 from .stats import (
+    DailyAdherence,
     StatusBreakdown,
     MealTypeAdherence,
     StatsResponse,
@@ -173,6 +174,7 @@ __all__ = [
     "TodayResponse",
     "YesterdayReviewResponse",
     # Stats
+    "DailyAdherence",
     "StatusBreakdown",
     "MealTypeAdherence",
     "StatsResponse",

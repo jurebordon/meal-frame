@@ -1,4 +1,5 @@
 """Pydantic schemas for Stats/Adherence responses."""
+from datetime import date
 from decimal import Decimal
 from uuid import UUID
 
@@ -32,6 +33,19 @@ class MealTypeAdherence(BaseSchema):
     )
 
 
+class DailyAdherence(BaseSchema):
+    """Adherence data for a single day (used in daily chart)."""
+
+    date: date
+    total: int = Field(description="Total slots for this day")
+    followed: int = Field(description="Slots followed or adjusted")
+    adherence_rate: Decimal = Field(
+        description="Adherence rate for this day (0.0-1.0)",
+        ge=0,
+        le=1,
+    )
+
+
 class StatsResponse(BaseSchema):
     """Response for GET /stats.
 
@@ -54,6 +68,10 @@ class StatsResponse(BaseSchema):
     by_meal_type: list[MealTypeAdherence] = Field(
         default_factory=list,
         description="Adherence breakdown by meal type, sorted by lowest adherence first",
+    )
+    daily_adherence: list[DailyAdherence] = Field(
+        default_factory=list,
+        description="Per-day adherence data points for charting, ordered by date ascending",
     )
 
 

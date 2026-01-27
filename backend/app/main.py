@@ -19,6 +19,7 @@ from app.api import (
     meals_router,
     meal_types_router,
     week_plans_router,
+    stats_router,
 )
 
 
@@ -63,6 +64,7 @@ app.include_router(day_templates_router)
 app.include_router(meals_router)
 app.include_router(meal_types_router)
 app.include_router(week_plans_router)
+app.include_router(stats_router)
 
 
 @app.get("/")
