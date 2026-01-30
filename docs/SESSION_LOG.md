@@ -5,6 +5,51 @@
 
 ---
 
+## Session: 2026-01-30 (10)
+
+**Role**: devops + frontend
+**Task**: Deployment setup (Docker Compose production config)
+**Branch**: main (direct)
+
+### Summary
+- Created multi-stage Dockerfiles for both backend and frontend with dev/prod targets
+- Backend prod: gunicorn + uvicorn workers, non-root user, auto-migrations via entrypoint.sh
+- Frontend prod: Next.js standalone output for minimal image size
+- Added docker-compose.prod.yml with Nginx reverse proxy (routes /api/ to backend, / to frontend)
+- Created .env.production.example with required DB_PASSWORD and optional config
+- Fixed dev docker-compose.yml to use explicit build targets and env var interpolation
+- Tested full production stack locally (all services healthy, API and frontend accessible)
+- Debugged mobile access: fixed CORS_ORIGINS and NEXT_PUBLIC_API_URL for LAN access
+- Generated current week plan manually (generate endpoint defaults to next week)
+- Identified UX improvements for week view: week selector carousel, regenerate functionality
+
+### Files Changed
+**New:**
+- backend/entrypoint.sh (migrations + gunicorn startup)
+- docker-compose.prod.yml (production overrides with Nginx)
+- nginx.conf (reverse proxy configuration)
+- .env.production.example (production env template)
+
+**Modified:**
+- backend/Dockerfile (multi-stage: base → deps → dev/prod)
+- backend/requirements.txt (added gunicorn==23.0.0)
+- frontend/Dockerfile (multi-stage: base → deps → dev/builder/prod)
+- frontend/next.config.js (added output: 'standalone')
+- docker-compose.yml (added build targets, env var interpolation for CORS/API_URL)
+- docs/ROADMAP.md (updated current task, added UX fixes to Next)
+- .gitignore (added v0_design/)
+
+### Decisions
+- Used Docker Compose override pattern (base + prod file) rather than separate configs
+- Nginx handles routing instead of exposing both services on different ports
+- Auto-run migrations in entrypoint for zero-touch deploys
+- Environment variables drive all config (GCP-ready)
+- Week selector feature deferred to separate session (added to ROADMAP)
+
+### Status: COMPLETE
+
+---
+
 ## Session: 2026-01-27 (9)
 
 **Role**: frontend
