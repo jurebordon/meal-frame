@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { X, CheckCircle2, AlertTriangle } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useIsMobile } from '@/components/ui/use-mobile'
 
 export interface Template {
   id: string
@@ -31,10 +32,23 @@ export function TemplatePicker({
   onSelectNoPlan,
   hasCompletedMeals = false,
 }: TemplatePickerProps) {
+  const isMobile = useIsMobile()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showNoPlanInput, setShowNoPlanInput] = useState(false)
   const [noPlanReason, setNoPlanReason] = useState('')
   const [showConfirmation, setShowConfirmation] = useState(false)
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
 
   const handleTemplateClick = (templateId: string) => {
     if (templateId === currentTemplateId) {
@@ -84,18 +98,22 @@ export function TemplatePicker({
         onClick={() => onOpenChange(false)}
       />
 
-      {/* Modal */}
+      {/* Modal - Fullscreen on mobile, centered on desktop */}
       <motion.div
-        initial={{ y: '100%', opacity: 0 }}
+        initial={{ y: isMobile ? '100%' : 0, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: '100%', opacity: 0 }}
+        exit={{ y: isMobile ? '100%' : 0, opacity: 0 }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="relative z-10 w-full max-w-lg rounded-t-2xl bg-card sm:rounded-2xl"
+        className={`relative z-10 w-full bg-card ${
+          isMobile
+            ? 'h-full flex flex-col'
+            : 'max-w-lg rounded-2xl max-h-[85vh]'
+        } ${!isMobile && 'rounded-t-2xl sm:rounded-2xl'}`}
       >
         {!showConfirmation ? (
           <>
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-border p-4">
+            {/* Header - Fixed at top */}
+            <div className="flex shrink-0 items-center justify-between border-b border-border p-4">
               <h2 className="text-lg font-semibold text-foreground">
                 {showNoPlanInput ? 'No Plan' : 'Change Template'}
               </h2>
@@ -105,13 +123,14 @@ export function TemplatePicker({
                   onOpenChange(false)
                 }}
                 className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label="Close"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="max-h-[60vh] overflow-y-auto p-4">
+            {/* Content - Scrollable */}
+            <div className={`overflow-y-auto p-4 ${isMobile ? 'flex-1' : 'max-h-[60vh]'}`}>
               {!showNoPlanInput ? (
                 <div className="space-y-3">
                   {templates.map((template) => {
@@ -196,7 +215,7 @@ export function TemplatePicker({
         ) : (
           <>
             {/* Confirmation Screen */}
-            <div className="p-6">
+            <div className={`p-6 ${isMobile ? 'flex flex-col h-full justify-center' : ''}`}>
               <div className="mb-4 flex justify-center">
                 <div className="rounded-full bg-warning/10 p-3">
                   <AlertTriangle className="h-6 w-6 text-warning" />
