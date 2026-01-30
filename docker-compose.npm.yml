@@ -1,0 +1,39 @@
+# Production Docker Compose for Nginx Proxy Manager
+# Usage: docker compose -f docker-compose.yml -f docker-compose.npm.yml up -d
+#
+# This config removes the bundled Nginx reverse proxy since NPM handles that.
+# NPM will proxy to the web container on port 3000.
+
+services:
+  db:
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    # Don't expose port - only accessible within Docker network
+
+  api:
+    build:
+      target: prod
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://mealframe:${DB_PASSWORD}@db:5432/mealframe
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://meals.bordon.family}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+    volumes: !reset []
+    command: !reset ""
+    # Don't expose port - web container will connect internally
+
+  web:
+    build:
+      target: prod
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://meals.bordon.family/api/v1}
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    volumes: !reset []
+    command: !reset ""
+    # Exposed on port 3000 for NPM to proxy to
+
+volumes:
+  pgdata:
