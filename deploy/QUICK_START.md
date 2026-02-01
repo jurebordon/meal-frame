@@ -84,9 +84,27 @@ git push -u origin main
 # SSH to CT
 ssh root@192.168.1.100
 
-# Clone repo
+# Generate SSH key for GitHub
+ssh-keygen -t ed25519 -C "mealframe-ct"
+# Press Enter for all prompts (default location, no passphrase)
+
+# Display public key
+cat ~/.ssh/id_ed25519.pub
+# Copy this entire output
+```
+
+**Add SSH key to GitHub:**
+1. Go to https://github.com/settings/keys
+2. Click "New SSH key"
+3. Title: "MealFrame CT"
+4. Paste the public key from above
+5. Click "Add SSH key"
+
+**Back on the CT:**
+```bash
+# Clone repo using SSH
 cd /opt/mealframe
-git clone https://github.com/YOUR_USERNAME/mealframe.git .
+git clone git@github.com:jurebordon/mealframe.git .
 
 # Create production environment
 cp deploy/.env.production.template .env.production
