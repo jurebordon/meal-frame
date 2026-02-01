@@ -26,6 +26,26 @@ pct start 100
 
 ### ☐ Step 2: Setup CT (5 min)
 
+**Option A: Via Proxmox host (most reliable)**
+
+```bash
+# On your Mac - copy to Proxmox host
+scp deploy/ct-setup.sh root@proxmox-host-ip:/tmp/
+
+# SSH to Proxmox host
+ssh root@proxmox-host-ip
+
+# Push to CT (replace 100 with your CT ID)
+pct push 100 /tmp/ct-setup.sh /root/ct-setup.sh
+
+# Enter CT console and run setup
+pct enter 100
+chmod +x /root/ct-setup.sh
+/root/ct-setup.sh
+```
+
+**Option B: Direct SSH (if SSH is enabled)**
+
 ```bash
 # Copy setup script to CT
 scp deploy/ct-setup.sh root@192.168.1.100:/root/
@@ -34,6 +54,16 @@ scp deploy/ct-setup.sh root@192.168.1.100:/root/
 ssh root@192.168.1.100
 chmod +x /root/ct-setup.sh
 /root/ct-setup.sh
+```
+
+**If SSH fails:** Use Option A, or enable SSH in CT:
+```bash
+# From Proxmox host
+pct enter 100
+apt update && apt install -y openssh-server
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+systemctl restart sshd
+exit
 ```
 
 ### ☐ Step 3: Push Code to GitHub (2 min)
