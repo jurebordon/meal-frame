@@ -134,6 +134,25 @@ chmod +x deploy/deploy.sh
 # Enable webhook service
 systemctl enable mealframe-webhook --now
 systemctl status mealframe-webhook  # Should show "active (running)"
+
+# If you get "Unit file does not exist", the ct-setup.sh didn't run properly
+# Create the service manually:
+# cat > /etc/systemd/system/mealframe-webhook.service <<'EOF'
+# [Unit]
+# Description=MealFrame Webhook Listener
+# After=network.target
+#
+# [Service]
+# Type=simple
+# User=root
+# WorkingDirectory=/opt/mealframe
+# ExecStart=/usr/bin/webhook -hooks /opt/mealframe/hooks.json -verbose -port 9000
+# Restart=always
+#
+# [Install]
+# WantedBy=multi-user.target
+# EOF
+# Then: systemctl daemon-reload && systemctl enable mealframe-webhook --now
 ```
 
 ### ☐ Step 5: Configure GitHub Actions (2 min)
