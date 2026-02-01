@@ -1,12 +1,11 @@
 # Roadmap
 
-**Last Updated**: 2026-01-30
+**Last Updated**: 2026-02-01
 **Current Phase**: MVP - Polish & UX Fixes
 
 ## Now (Current Work)
 
 <!-- ONE task in progress at a time -->
-- [ ] Fix: Undo action for completed meals (wrong status selected)
 
 ## Next (Queued)
 
@@ -28,6 +27,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Fix: Undo action for completed meals (tap to change status, "Current" badge) (2026-02-01)
 - [x] Template picker modal mobile UX (fullscreen, scroll prevention, "No Plan" visible) (2026-01-30)
 - [x] Week selector with navigation (arrow-based week switching, smart regeneration) (2026-01-30)
 - [x] Deployment setup (Docker Compose production config, Nginx, multi-stage builds) (2026-01-30)

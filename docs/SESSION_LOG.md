@@ -5,6 +5,48 @@
 
 ---
 
+## Session: 2026-02-01 (13)
+
+**Role**: frontend
+**Task**: Fix: Undo action for completed meals (wrong status selected)
+**Branch**: fix/undo-completion-status
+
+### Summary
+- Users can now tap completed meals to change their status (not just undo to pending)
+- CompletionSheetAnimated shows "Change status" header when editing existing completion
+- Current status highlighted with "Current" badge and ring indicator
+- Toast message says "Changed to {status}" when editing vs "Marked as {status}" for new
+- Existing undo-to-pending via toast button preserved
+
+### Files Changed
+**Frontend (modified):**
+- [frontend/src/app/page.tsx](frontend/src/app/page.tsx) - Allow tapping completed meals, pass currentStatus to sheet
+- [frontend/src/components/mealframe/completion-sheet-animated.tsx](frontend/src/components/mealframe/completion-sheet-animated.tsx) - Added currentStatus prop, "Change status" header, "Current" badge
+
+**E2E Tests (modified):**
+- [frontend/e2e/daily-flow.spec.ts](frontend/e2e/daily-flow.spec.ts) - Added test for status change flow
+
+### Implementation Details
+- Completed meals now have `onClick` handler (previously `undefined`)
+- CompletionSheetAnimated receives `currentStatus` prop to detect edit mode
+- `isEditing` flag triggers different header text and "Current" badge display
+- `wasAlreadyCompleted` check in handler determines toast message wording
+- Quick-complete gestures (long-press, swipe) remain disabled for completed meals
+
+### Decisions
+- Option C implemented: both undo (reset to pending via toast) and direct status change (tap meal)
+- "Current" badge uses subtle `ring-2 ring-foreground/20` to indicate without being too prominent
+- Kept animation for status changes (same celebration animation as initial completion)
+
+### Testing Performed
+- Frontend build passes with no TypeScript errors
+- Added E2E test: "Tapping completed meal allows status change"
+- Existing "Undo via toast resets completion" test still valid
+
+### Status: COMPLETE
+
+---
+
 ## Session: 2026-01-30 (12)
 
 **Role**: frontend
