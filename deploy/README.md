@@ -67,7 +67,7 @@ Total time: ~2-3 minutes from push to live (includes Docker build).
 
 ## 🛠️ Maintenance Commands
 
-SSH to CT: `ssh root@192.168.1.100`
+SSH to CT: `ssh jure@192.168.1.100`
 
 ### View Logs
 
@@ -154,7 +154,7 @@ Frontend loads but can't reach API? See [TROUBLESHOOTING_BACKEND.md](TROUBLESHOO
 
 Run diagnostic script:
 ```bash
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 cd /opt/mealframe
 bash deploy/diagnose.sh
 ```

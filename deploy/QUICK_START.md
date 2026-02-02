@@ -6,7 +6,7 @@ If you previously set up webhook-based deployment (ran ct-setup.sh with webhook 
 
 ```bash
 # SSH to CT
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 
 # Stop and disable the webhook service
 systemctl stop mealframe-webhook
@@ -80,7 +80,7 @@ chmod +x /root/ct-setup.sh
 scp deploy/ct-setup.sh root@192.168.1.100:/root/
 
 # SSH to CT and run
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 chmod +x /root/ct-setup.sh
 /root/ct-setup.sh
 ```
@@ -111,7 +111,7 @@ git push -u origin main
 
 ```bash
 # SSH to CT
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 
 # Generate SSH key for GitHub
 ssh-keygen -t ed25519 -C "mealframe-ct"
@@ -160,10 +160,10 @@ chmod +x deploy/deploy.sh
 ssh-keygen -t ed25519 -f ~/.ssh/mealframe-deploy -C "mealframe-deploy" -N ""
 
 # Copy public key to the CT
-ssh-copy-id -i ~/.ssh/mealframe-deploy.pub root@192.168.1.100
+ssh-copy-id -i ~/.ssh/mealframe-deploy.pub jure@192.168.1.100
 
 # Test SSH connection
-ssh -i ~/.ssh/mealframe-deploy root@192.168.1.100 "echo 'SSH works!'"
+ssh -i ~/.ssh/mealframe-deploy jure@192.168.1.100 "echo 'SSH works!'"
 
 # Base64 encode the private key for GitHub
 cat ~/.ssh/mealframe-deploy | base64 | tr -d '\n'
@@ -179,7 +179,7 @@ Go to your repo → Settings → Secrets and variables → Actions → New repos
 | `HOMELAB_SSH_KEY_BASE64` | The base64-encoded private key from above |
 | `HOMELAB_WAN_IP` | Your public IP (or use a DDNS hostname) |
 | `HOMELAB_SSH_PORT` | Your SSH port (forwarded through router) |
-| `HOMELAB_USERNAME` | `root` (or your deploy user) |
+| `HOMELAB_USERNAME` | `jure` (your deploy user, must be in docker group) |
 
 **Set up SSH port forwarding on your router:**
 
@@ -217,7 +217,7 @@ location /api/ {
 
 ```bash
 # SSH to CT
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 
 # Start containers
 cd /opt/mealframe
@@ -274,7 +274,7 @@ Your app is now:
 
 - **Access**: https://meals.bordon.family
 - **Deploy**: Just `git push` - automatic!
-- **Logs**: `ssh root@192.168.1.100 "cd /opt/mealframe && docker compose logs -f"`
+- **Logs**: `ssh jure@192.168.1.100 "cd /opt/mealframe && docker compose logs -f"`
 - **Restart**: `docker compose -f docker-compose.yml -f docker-compose.npm.yml restart`
 
 ## Troubleshooting
@@ -283,7 +283,7 @@ Your app is now:
 
 **Run diagnostic script on VM:**
 ```bash
-ssh root@192.168.1.100
+ssh jure@192.168.1.100
 cd /opt/mealframe
 bash deploy/diagnose.sh
 ```
