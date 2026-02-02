@@ -111,3 +111,4 @@ Private project - All rights reserved
 ## Contact
 
 Jure Bordon - [@jurebordon](https://github.com/jurebordon)
+# Deployed
