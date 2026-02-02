@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated**: 2026-02-01
+**Last Updated**: 2026-02-02
 **Current Phase**: MVP - Polish & UX Fixes
 
 ## Now (Current Work)
@@ -10,6 +10,7 @@
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
+- Enable auto-deployment webhook in GitHub Actions (uncomment webhook call in deploy.yml)
 
 ## Later (Backlog)
 
@@ -27,6 +28,9 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Homelab deployment to Proxmox VM with NPM reverse proxy and SSL (2026-02-02)
+- [x] Fix backend API connectivity through NPM (expose API port 8003, configure proxy) (2026-02-02)
+- [x] Configure split DNS in OPNsense to avoid DNS rebind warnings (2026-02-02)
 - [x] Fix: Undo action for completed meals (tap to change status, "Current" badge) (2026-02-01)
 - [x] Template picker modal mobile UX (fullscreen, scroll prevention, "No Plan" visible) (2026-01-30)
 - [x] Week selector with navigation (arrow-based week switching, smart regeneration) (2026-01-30)
