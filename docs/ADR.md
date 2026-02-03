@@ -220,6 +220,60 @@ Manual trigger (user clicks "Generate Next Week"), typically Sunday evening.
 
 ---
 
+## ADR-008: Grocery List Ingredient Extraction Strategy
+
+**Date**: 2026-02-03
+**Status**: Proposed (Needs Discussion)
+**Context**: Users want to generate a grocery list from the weekly meal plan. The challenge is extracting structured ingredient data from unstructured portion descriptions.
+
+### Problem
+
+Meals store portions as free-text strings (e.g., "2 eggs + 1 slice toast + 1 tbsp butter"). To generate a useful grocery list, we need to:
+1. Parse these descriptions into individual ingredients
+2. Optionally aggregate quantities across the week (e.g., "6 eggs" instead of "2 eggs x3")
+3. Group items logically (produce, dairy, proteins, etc.)
+
+### Options Under Consideration
+
+**Option A: Simple Pass-Through (No Parsing)**
+- Display each meal's portion description as-is, grouped by day
+- Pros: Immediate implementation, no parsing errors
+- Cons: No aggregation, no smart grouping, less useful
+
+**Option B: Regex/Rule-Based Parsing**
+- Parse common patterns: "2 eggs", "1 cup rice", "200g chicken"
+- Maintain ingredient category mappings
+- Pros: Deterministic, no API costs
+- Cons: Brittle, requires maintenance, limited flexibility
+
+**Option C: AI-Powered Extraction**
+- Use LLM to parse portion descriptions into structured ingredients
+- Could run on-demand or batch during week generation
+- Pros: Handles natural language well, can categorize intelligently
+- Cons: API costs, latency, dependency on external service
+
+**Option D: Structured Ingredients Field**
+- Add `ingredients` JSON field to meal model
+- Users enter structured data during meal creation
+- Pros: Clean data, reliable aggregation
+- Cons: Migration required, more work during meal entry, existing meals need backfill
+
+### Questions to Resolve
+
+1. How accurate does parsing need to be? (80% good enough vs. perfect)
+2. Is aggregation essential or nice-to-have?
+3. What's the acceptable latency for generating a grocery list?
+4. Should this work offline?
+5. Budget for external API calls (if AI approach)?
+
+### Next Steps
+
+- Use the app for real meal planning to understand actual pain points
+- Evaluate whether simple pass-through (Option A) is sufficient for MVP
+- If not, prototype AI extraction with a few sample meals to assess quality
+
+---
+
 ## ADR-007: Completion Statuses Are Optional
 
 **Date**: 2026-01-19 (from PRD)
