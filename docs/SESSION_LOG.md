@@ -50,10 +50,14 @@
 ### Router Configuration Required
 - Forward external SSH port (e.g., 2222) to CT's SSH port 22 at 192.168.1.100
 
-### Status: COMPLETE
+### Status: COMPLETE ✅
+
+### Issues Resolved
+- GitHub Actions runner unavailable (GitHub infrastructure outage - resolved by waiting)
+- Docker permission denied for user `jure` → Fixed with `sudo usermod -aG docker jure`
+- Base64 encoding issues on macOS → Fixed with `base64 -b 0` flag (no line wrapping)
 
 ### Next
-- Set up SSH port forwarding and add GitHub secrets to enable auto-deployment
 - Pick next task from Later section in ROADMAP
 
 ---
