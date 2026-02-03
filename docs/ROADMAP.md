@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-02-03
 **Current Phase**: MVP - Polish & UX Fixes
 
 ## Now (Current Work)
@@ -15,7 +15,6 @@
 ## Later (Backlog)
 
 <!-- Ideas and future work, not prioritized -->
-- "Yesterday Review" modal on morning open
 - Push notification reminders (requires native app consideration)
 - Grocery list generation from weekly plan
 - Ingredient-based meal builder with macro calculation
@@ -28,6 +27,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] "Yesterday Review" modal on morning open (2026-02-03)
 - [x] Enable SSH-based auto-deployment from GitHub Actions (2026-02-02)
 - [x] Homelab deployment to Proxmox VM with NPM reverse proxy and SSL (2026-02-02)
 - [x] Fix backend API connectivity through NPM (expose API port 8003, configure proxy) (2026-02-02)

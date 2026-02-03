@@ -162,3 +162,42 @@ export async function createMeal(
 export async function ensureWeeklyPlan(): Promise<WeeklyPlanData> {
   return generateWeek()
 }
+
+// ---------------------------------------------------------------------------
+// Yesterday
+// ---------------------------------------------------------------------------
+
+export async function getYesterday(): Promise<TodayData> {
+  return api('/yesterday')
+}
+
+/**
+ * Reset all completed slots for yesterday back to pending (null status).
+ * Returns the refreshed yesterday data.
+ */
+export async function resetYesterdayCompletions(): Promise<TodayData> {
+  const yesterday = await getYesterday()
+  for (const slot of yesterday.slots) {
+    if (slot.completion_status !== null) {
+      await uncompleteSlot(slot.id)
+    }
+  }
+  return getYesterday()
+}
+
+/**
+ * Mark all slots for yesterday as completed with given status.
+ * Returns the refreshed yesterday data.
+ */
+export async function completeAllYesterdaySlots(status = 'followed'): Promise<TodayData> {
+  const yesterday = await getYesterday()
+  for (const slot of yesterday.slots) {
+    if (slot.completion_status === null) {
+      await api(`/slots/${slot.id}/complete`, {
+        method: 'POST',
+        body: JSON.stringify({ status }),
+      })
+    }
+  }
+  return getYesterday()
+}

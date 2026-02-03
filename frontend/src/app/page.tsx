@@ -6,10 +6,12 @@ import { ProgressRing } from '@/components/mealframe/progress-ring'
 import { StreakBadge } from '@/components/mealframe/streak-badge'
 import { CompletionSheetAnimated } from '@/components/mealframe/completion-sheet-animated'
 import { CompletionAnimation } from '@/components/mealframe/completion-animation'
+import { YesterdayReviewModal } from '@/components/mealframe/yesterday-review-modal'
 import { Toast } from '@/components/mealframe/toast'
 import { Button } from '@/components/ui/button'
 import { Loader2, RefreshCw, Calendar } from 'lucide-react'
 import { useToday, useCompleteSlot, useUncompleteSlot, useOfflineSync } from '@/hooks/use-today'
+import { useYesterdayReview, useCompleteYesterdaySlot } from '@/hooks/use-yesterday-review'
 import type { CompletionStatus, WeeklyPlanSlotWithNext } from '@/lib/types'
 import Link from 'next/link'
 
@@ -18,6 +20,16 @@ export default function TodayView() {
   const completeSlotMutation = useCompleteSlot()
   const uncompleteSlotMutation = useUncompleteSlot()
   useOfflineSync()
+
+  // Yesterday review
+  const {
+    yesterdayData,
+    shouldShowReview,
+    dismissReview,
+    unmarkedSlots: yesterdayUnmarkedSlots,
+  } = useYesterdayReview()
+  const completeYesterdaySlotMutation = useCompleteYesterdaySlot()
+  const [showYesterdayReview, setShowYesterdayReview] = useState(true)
 
   const [showCompletionSheet, setShowCompletionSheet] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState<WeeklyPlanSlotWithNext | null>(null)
@@ -297,6 +309,20 @@ export default function TodayView() {
         onClose={() => setShowToast(false)}
         duration={3000}
       />
+
+      {/* Yesterday Review Modal */}
+      {yesterdayData && (
+        <YesterdayReviewModal
+          open={shouldShowReview && showYesterdayReview}
+          onOpenChange={setShowYesterdayReview}
+          yesterdayDate={yesterdayData.date}
+          unmarkedSlots={yesterdayUnmarkedSlots}
+          onCompleteSlot={(slotId, status) => {
+            completeYesterdaySlotMutation.mutate({ slotId, status })
+          }}
+          onDismiss={dismissReview}
+        />
+      )}
     </div>
   )
 }

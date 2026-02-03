@@ -5,6 +5,57 @@
 
 ---
 
+## Session: 2026-02-03 (16)
+
+**Role**: frontend
+**Task**: "Yesterday Review" modal on morning open
+**Branch**: feat/yesterday-review-modal
+
+### Summary
+- Built yesterday review modal that prompts users to catch up on unmarked meals from the previous day
+- Modal appears on first Today View visit each calendar day if yesterday has unmarked slots
+- Users can mark status for each meal or dismiss to skip for today
+- Dismissal preference saved in localStorage, scoped to current date
+- Created TanStack Query hooks for fetching yesterday data and completing slots
+- Added 6 E2E tests covering modal appearance, dismissal, and completion flows
+
+### Files Changed
+**Frontend (new):**
+- [frontend/src/components/mealframe/yesterday-review-modal.tsx](frontend/src/components/mealframe/yesterday-review-modal.tsx) - Modal component with expandable meal cards and status buttons
+- [frontend/src/hooks/use-yesterday-review.ts](frontend/src/hooks/use-yesterday-review.ts) - Hooks for yesterday data, first-visit tracking, and slot completion
+
+**Frontend (modified):**
+- [frontend/src/app/page.tsx](frontend/src/app/page.tsx) - Integrated yesterday review modal into Today View
+
+**E2E Tests:**
+- [frontend/e2e/helpers.ts](frontend/e2e/helpers.ts) - Added getYesterday, resetYesterdayCompletions, completeAllYesterdaySlots helpers
+- [frontend/e2e/yesterday-review.spec.ts](frontend/e2e/yesterday-review.spec.ts) - 6 tests for modal behavior
+
+### Implementation Details
+- Modal uses existing `/api/v1/yesterday` endpoint (already existed)
+- First-visit tracking via localStorage key `mealframe_yesterday_review_dismissed` with today's date
+- Modal auto-closes when all yesterday's slots are marked
+- Compact status buttons (Followed, Adjusted, Skipped, Replaced, Social) in expandable cards
+- Optimistic updates for completing yesterday's slots
+
+### Decisions
+- Show modal on first Today View visit per calendar day (not app launch)
+- Dismissing modal leaves meals unmarked (user can catch up via Week View later)
+- No time cutoff - show review whenever first opened that day
+- Modal slides up from bottom (consistent with CompletionSheet pattern)
+
+### Testing Performed
+- Frontend build passes (8 static pages)
+- 26 E2E tests discovered (6 new yesterday-review tests)
+- TypeScript compilation clean
+
+### Status: COMPLETE
+
+### Next
+- Pick next task from Later section in ROADMAP
+
+---
+
 ## Session: 2026-02-02 (15)
 
 **Role**: devops
