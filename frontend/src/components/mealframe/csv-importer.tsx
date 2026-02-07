@@ -110,7 +110,7 @@ export function CSVImporter({ open, onOpenChange, onImportComplete }: CSVImporte
                     {file ? file.name : 'Choose a CSV file'}
                   </p>
                   <p className="mb-4 text-xs text-muted-foreground">
-                    Required columns: name, portion_description. Optional: calories_kcal, protein_g, carbs_g, fat_g, meal_types, notes
+                    Required columns: name, portion_description. Optional: calories_kcal, protein_g, carbs_g, sugar_g, fat_g, saturated_fat_g, fiber_g, meal_types, notes
                   </p>
                   <input
                     type="file"
@@ -129,9 +129,9 @@ export function CSVImporter({ open, onOpenChange, onImportComplete }: CSVImporte
                 <div className="rounded-lg border border-border bg-muted/20 p-4">
                   <p className="mb-2 text-xs font-semibold text-foreground">CSV Format Example:</p>
                   <pre className="overflow-x-auto text-xs text-muted-foreground">
-                    {`name,portion_description,calories_kcal,protein_g,carbs_g,fat_g,meal_types,notes
-"Scrambled Eggs","2 eggs + 1 slice toast",320,18,15,22,"Breakfast","Use whole wheat"
-"Chicken Bowl","150g chicken + rice",520,42,50,12,"Lunch,Dinner","Meal prep friendly"`}
+                    {`name,portion_description,calories_kcal,protein_g,carbs_g,sugar_g,fat_g,saturated_fat_g,fiber_g,meal_types,notes
+"Scrambled Eggs","2 eggs + 1 slice toast",320,18,15,2,22,6,2,"Breakfast","Use whole wheat"
+"Chicken Bowl","150g chicken + rice",520,42,50,1,12,3,4,"Lunch,Dinner","Meal prep friendly"`}
                   </pre>
                 </div>
 
