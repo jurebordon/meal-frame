@@ -8,7 +8,7 @@ These tests verify:
 - Valid CSV with all columns creates meals correctly
 - Missing optional fields result in null values
 - Missing required fields skip the row and report errors
-- Unknown meal types generate warnings but still create meals
+- Unknown meal types are auto-created and assigned (info message logged)
 - Empty file / malformed CSV returns appropriate errors
 - Meal type associations are created correctly
 - Duplicate meal names are allowed
@@ -220,7 +220,7 @@ async def test_import_duplicate_names_allowed(client: AsyncClient, db: AsyncSess
 
 @pytest.mark.asyncio
 async def test_import_unknown_meal_type_warns(client: AsyncClient, db: AsyncSession):
-    """Unknown meal type name creates warning but still creates the meal."""
+    """Unknown meal type is auto-created and info message logged."""
     csv_data = _make_csv(
         "name,portion_description,meal_types",
         '"Snack","A handful of nuts","Nonexistent Type"',
@@ -239,11 +239,28 @@ async def test_import_unknown_meal_type_warns(client: AsyncClient, db: AsyncSess
     assert len(data["warnings"]) == 1
     assert data["warnings"][0]["row"] == 1
     assert "Nonexistent Type" in data["warnings"][0]["message"]
-    assert "not found" in data["warnings"][0]["message"]
+    assert "Created new meal type" in data["warnings"][0]["message"]
 
-    # Meal was still created
+    # Meal type was created
+    assert data["summary"]["created_meal_types"] == ["Nonexistent Type"]
+
+    # Meal was created with meal type association
     result = await db.execute(select(Meal).where(Meal.name == "Snack"))
-    assert result.scalars().first() is not None
+    meal = result.scalars().first()
+    assert meal is not None
+
+    # Verify meal type was created
+    mt_result = await db.execute(select(MealType).where(MealType.name == "Nonexistent Type"))
+    meal_type = mt_result.scalars().first()
+    assert meal_type is not None
+
+    # Verify association
+    assoc_result = await db.execute(
+        select(meal_to_meal_type).where(meal_to_meal_type.c.meal_id == meal.id)
+    )
+    assocs = assoc_result.all()
+    assert len(assocs) == 1
+    assert assocs[0].meal_type_id == meal_type.id
 
 
 @pytest.mark.asyncio
