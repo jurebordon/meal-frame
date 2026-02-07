@@ -62,8 +62,8 @@ Some yogurt with stuff  (too vague)
 ### meal_types
 
 - Comma-separated list of meal type names
-- Names must exactly match existing meal types (case-sensitive)
-- If a meal type doesn't exist, import will log a warning and skip that assignment
+- Names are case-sensitive ("Breakfast" and "breakfast" are different)
+- If a meal type doesn't exist, it will be automatically created
 - A meal can belong to multiple types
 
 **Examples:**
@@ -121,16 +121,17 @@ file: [CSV file]
     "total_rows": 11,
     "created": 10,
     "skipped": 1,
-    "warnings": 2
+    "warnings": 2,
+    "created_meal_types": ["Post-Workout Snack", "Hiking Fuel"]
   },
   "warnings": [
     {
       "row": 5,
-      "message": "Meal type 'Unknown Type' not found, skipping assignment"
+      "message": "Created new meal type: 'Post-Workout Snack'"
     },
     {
       "row": 8,
-      "message": "Missing calories_kcal, imported with null value"
+      "message": "Invalid calories_kcal value 'abc', imported with null value"
     }
   ],
   "errors": [
@@ -146,7 +147,7 @@ file: [CSV file]
 
 - **Rows with errors** are skipped, others are imported
 - **Duplicate names** are allowed (creates new meal)
-- **Unknown meal types** are logged as warnings, meal is still created
+- **Unknown meal types** are automatically created and assigned (info message logged)
 - **Missing optional fields** result in null values
 
 ---
@@ -169,31 +170,26 @@ file: [CSV file]
 
 - **Start small**: Import 5-10 meals first to verify format
 - **Use quotes**: Wrap text fields in quotes if they contain commas
-- **Check meal types**: Export existing meal types first to ensure exact name matches
+- **Meal types are auto-created**: No need to pre-create meal types - they'll be created during import if missing
 - **UTF-8 encoding**: Use UTF-8 to preserve special characters
 
 ---
 
-## 6. Existing Meal Types Reference
+## 6. Meal Types
 
-Before importing, verify your meal type names match exactly. These are the default meal types:
+Meal types are automatically created during import if they don't exist. You can use any names you want in the `meal_types` column.
 
-| Meal Type Name |
-|----------------|
-| Breakfast |
-| Pre-Workout Breakfast |
-| Mid-Morning Protein |
-| Lunch |
-| Afternoon Filler |
-| Pre-Workout Snack |
-| Post-Workout Snack |
-| Dinner |
-| After-Exercise Dinner |
-| Weekend Breakfast |
-| Light Dinner |
-| Hiking Fuel |
+**Case sensitivity:** Meal type names are case-sensitive. "Breakfast" and "breakfast" are treated as different meal types.
 
-**Note:** Names are case-sensitive. "breakfast" will not match "Breakfast".
+**Common meal type names** (for reference):
+- Breakfast, Pre-Workout Breakfast, Weekend Breakfast
+- Mid-Morning Protein, Mid-Morning Snack
+- Lunch, Light Lunch, Work Lunch
+- Afternoon Filler, Afternoon Snack
+- Pre-Workout Snack, Post-Workout Snack
+- Dinner, Light Dinner, After-Exercise Dinner
+- Evening Snack
+- Special occasions (Holiday Meal, Social Meal, etc.)
 
 ---
 
@@ -213,7 +209,7 @@ Copy this header row and add your meals below.
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Meal created but no types assigned | Meal type name doesn't match | Check exact spelling and case |
+| Unexpected meal types created | Typo in meal type name | Check spelling in CSV before import |
 | Row skipped entirely | Missing required field | Ensure name and portion_description are filled |
 | Garbled characters | Encoding issue | Save as UTF-8 |
 | Numbers parsed incorrectly | Using comma as decimal | Use period: `25.5` not `25,5` |

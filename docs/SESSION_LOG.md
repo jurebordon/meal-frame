@@ -5,6 +5,43 @@
 
 ---
 
+## Session: 2026-02-07 (Quick Fix)
+
+**Role**: backend + docs
+**Task**: CSV import auto-create missing meal types
+**Branch**: main (direct commits)
+
+### Summary
+- Implemented auto-creation of missing meal types during CSV import
+- Changed behavior from "skip with warning" to "create and assign with info message"
+- Updated MealImportSummary schema to include `created_meal_types` list
+- Import now tracks which meal types were created and shows them in the response
+- Updated MEAL_IMPORT_GUIDE.md to reflect new behavior and remove friction
+
+### Files Changed
+- [backend/app/services/meals.py](backend/app/services/meals.py) - Auto-create meal types (lines 207-226)
+- [backend/app/schemas/meal.py](backend/app/schemas/meal.py) - Added created_meal_types field to MealImportSummary
+- [docs/frozen/MEAL_IMPORT_GUIDE.md](docs/frozen/MEAL_IMPORT_GUIDE.md) - Updated behavior description and examples
+
+### Implementation Details
+- When CSV references unknown meal type, create it with just `name` field
+- Add to lookup dict immediately to avoid duplicates within same import
+- Track created types and log info message: "Created new meal type: '{name}'"
+- Case-sensitive: "Breakfast" and "breakfast" are different types
+- All part of same transaction (rolled back if import fails)
+
+### Decisions
+- Meal types created with minimal data (name only, no description/tags)
+- Info message logged as "warning" (existing pattern, non-fatal informational)
+- Created types shown in summary.created_meal_types array
+- No special UI handling needed - users see the info in warnings list
+
+### Next
+- User can re-import meals without pre-creating meal types
+- Consider future enhancement: bulk edit meal type properties after import
+
+---
+
 ## Session: 2026-02-07 (Planning)
 
 **Role**: planning + code audit

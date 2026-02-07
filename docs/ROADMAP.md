@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated**: 2026-02-04
+**Last Updated**: 2026-02-07
 **Current Phase**: MVP Complete - Evaluating Phase 2
 
 ## Now (Current Work)
@@ -10,9 +10,6 @@
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-**Quick Fixes:**
-- CSV import: auto-create missing meal types (currently skips with warning)
-
 **Choose one to begin Phase 2:**
 - User management and authentication (ADR-009) - Required to expose app to other users
 - Grocery list generation (ADR-008) - Most requested feature for personal use
@@ -32,6 +29,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] CSV import: auto-create missing meal types (2026-02-07)
 - [x] "Yesterday Review" modal on morning open (2026-02-03)
 - [x] Enable SSH-based auto-deployment from GitHub Actions (2026-02-02)
 - [x] Homelab deployment to Proxmox VM with NPM reverse proxy and SSL (2026-02-02)

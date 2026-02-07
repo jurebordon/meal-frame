@@ -73,7 +73,7 @@ async def import_meals_from_csv(
     Per MEAL_IMPORT_GUIDE.md:
     - Rows with errors (missing required fields) are skipped, others are imported
     - Duplicate names are allowed (creates new meal)
-    - Unknown meal types are logged as warnings, meal is still created
+    - Unknown meal types are automatically created and assigned
     - Missing optional fields result in null values
 
     Args:
@@ -86,6 +86,7 @@ async def import_meals_from_csv(
     warnings: list[MealImportWarning] = []
     errors: list[MealImportError] = []
     created_count = 0
+    created_meal_types: list[str] = []
 
     # Resolve all meal types upfront
     meal_type_lookup = await _resolve_meal_types(db)
@@ -207,16 +208,27 @@ async def import_meals_from_csv(
             for type_name in type_names:
                 mt = meal_type_lookup.get(type_name)
                 if mt is None:
-                    row_warnings.append(
-                        f"Meal type '{type_name}' not found, skipping assignment"
-                    )
-                else:
-                    await db.execute(
-                        meal_to_meal_type.insert().values(
-                            meal_id=meal.id,
-                            meal_type_id=mt.id,
+                    # Auto-create the meal type
+                    mt = MealType(name=type_name)
+                    db.add(mt)
+                    await db.flush()  # Get the ID
+
+                    # Add to lookup for subsequent rows (avoid duplicates in same import)
+                    meal_type_lookup[type_name] = mt
+
+                    # Track creation for info message
+                    if type_name not in created_meal_types:
+                        created_meal_types.append(type_name)
+                        row_warnings.append(
+                            f"Created new meal type: '{type_name}'"
                         )
+
+                await db.execute(
+                    meal_to_meal_type.insert().values(
+                        meal_id=meal.id,
+                        meal_type_id=mt.id,
                     )
+                )
             await db.flush()
 
         # Add any warnings from this row
@@ -235,6 +247,7 @@ async def import_meals_from_csv(
             created=created_count,
             skipped=total_rows - created_count,
             warnings=len(warnings),
+            created_meal_types=created_meal_types,
         ),
         warnings=warnings,
         errors=errors,

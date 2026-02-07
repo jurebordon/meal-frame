@@ -146,6 +146,10 @@ class MealImportSummary(BaseSchema):
     created: int = Field(description="Number of meals created")
     skipped: int = Field(description="Number of rows skipped due to errors")
     warnings: int = Field(description="Number of warnings generated")
+    created_meal_types: list[str] = Field(
+        default_factory=list,
+        description="Meal type names that were auto-created during import"
+    )
 
 
 class MealImportResult(BaseSchema):
