@@ -7,7 +7,7 @@ Per Tech Spec section 4.5 (Setup/Admin Endpoints).
 import logging
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -50,13 +50,22 @@ async def get_week_plan_by_id(db: AsyncSession, plan_id: UUID) -> WeekPlan | Non
 
 async def create_week_plan(db: AsyncSession, data: WeekPlanCreate) -> WeekPlan:
     """Create a new week plan with day mappings."""
+    # Check if this is the first week plan
+    count_result = await db.execute(select(func.count(WeekPlan.id)))
+    existing_count = count_result.scalar() or 0
+
+    # Auto-default the first week plan
+    is_default = data.is_default
+    if existing_count == 0:
+        is_default = True
+
     # If this is set as default, clear other defaults
-    if data.is_default:
+    if is_default:
         await _clear_default(db)
 
     plan = WeekPlan(
         name=data.name,
-        is_default=data.is_default,
+        is_default=is_default,
     )
     db.add(plan)
     await db.flush()
