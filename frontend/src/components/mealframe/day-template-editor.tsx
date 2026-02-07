@@ -87,7 +87,7 @@ export function DayTemplateEditor({
     slotCounter += 1
     const newSlot: EditableSlot = {
       tempId: `new-slot-${Date.now()}-${slotCounter}`,
-      position: slots.length,
+      position: slots.length + 1, // 1-based position
       meal_type_id: mealTypes[0].id,
     }
     setSlots([...slots, newSlot])
@@ -97,7 +97,7 @@ export function DayTemplateEditor({
     setSlots(
       slots
         .filter((s) => s.tempId !== tempId)
-        .map((s, idx) => ({ ...s, position: idx }))
+        .map((s, idx) => ({ ...s, position: idx + 1 })) // 1-based position
     )
   }
 
@@ -114,7 +114,7 @@ export function DayTemplateEditor({
     const swapIndex = direction === 'up' ? index - 1 : index + 1
     ;[newSlots[index], newSlots[swapIndex]] = [newSlots[swapIndex], newSlots[index]]
 
-    setSlots(newSlots.map((s, idx) => ({ ...s, position: idx })))
+    setSlots(newSlots.map((s, idx) => ({ ...s, position: idx + 1 }))) // 1-based position
   }
 
   const handleUpdateSlotMealType = (tempId: string, mealTypeId: string) => {
