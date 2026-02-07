@@ -5,6 +5,41 @@
 
 ---
 
+## Session: 2026-02-07 (Continued)
+
+**Role**: backend + frontend + bugfix
+**Task**: Extended nutrients UI + day template fix + auto-default week plan
+**Branch**: main (direct commits)
+
+### Summary
+- Fixed critical day template save bug (0-based vs 1-based position indexing)
+- Added sugar_g, saturated_fat_g, fiber_g input fields to meal editor UI
+- Fixed local development environment (.env with correct DB port 5436)
+- Implemented auto-default logic: first created week plan automatically becomes default
+- Diagnosed week view issue: expected behavior when setup incomplete
+
+### Files Changed
+- `frontend/src/components/mealframe/day-template-editor.tsx` - Fixed 0-based indexing bug
+- `frontend/src/components/mealframe/meal-editor.tsx` - Added 3 new nutrient input fields
+- `frontend/src/app/meals/page.tsx` - Updated save/edit handlers for new fields
+- `backend/app/services/week_plans.py` - Added auto-default logic for first week plan
+- `backend/.env` - Created with correct DATABASE_URL (port 5436)
+
+### Decisions
+- Day template positions must be 1-based (backend validation requirement)
+- First week plan auto-defaults to eliminate "No default week plan" error
+- Week view failure is expected behavior when setup incomplete (not a bug)
+
+### Blockers
+- None
+
+### Next
+- Complete setup flow: create meal types → day templates → week plan
+- Import 11 meals from CSV
+- Consider implementing ADR-010 for frontend nutrient display
+
+---
+
 ## Session: 2026-02-07
 
 **Role**: backend + data migration
