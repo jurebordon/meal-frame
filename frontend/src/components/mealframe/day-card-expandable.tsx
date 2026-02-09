@@ -17,7 +17,10 @@ export interface Meal {
     calories: number
     protein: number
     carbs: number
+    sugar: number
     fat: number
+    saturatedFat: number
+    fiber: number
   }
 }
 
@@ -124,6 +127,19 @@ export function DayCardExpandable({
                     />
                   </div>
                 </div>
+
+                {/* Daily Totals */}
+                {meals.length > 0 && (
+                  <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+                    <span>{Math.round(meals.reduce((s, m) => s + m.macros.calories, 0))} cal</span>
+                    <span>&middot;</span>
+                    <span>{Math.round(meals.reduce((s, m) => s + m.macros.protein, 0))}g P</span>
+                    <span>&middot;</span>
+                    <span>{Math.round(meals.reduce((s, m) => s + m.macros.carbs, 0))}g C</span>
+                    <span>&middot;</span>
+                    <span>{Math.round(meals.reduce((s, m) => s + m.macros.fat, 0))}g F</span>
+                  </div>
+                )}
               </div>
             )}
           </button>
@@ -182,14 +198,17 @@ export function DayCardExpandable({
                         <p className="mb-2 text-xs text-foreground/80 leading-relaxed">
                           {meal.portion}
                         </p>
-                        <div className="flex gap-2 text-xs text-muted-foreground">
+                        <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
                           <span>{meal.macros.calories} cal</span>
-                          <span>•</span>
+                          <span>&middot;</span>
                           <span>{meal.macros.protein}g P</span>
-                          <span>•</span>
+                          <span>&middot;</span>
                           <span>{meal.macros.carbs}g C</span>
-                          <span>•</span>
+                          {meal.macros.sugar > 0 && <><span>&middot;</span><span>{meal.macros.sugar}g sugar</span></>}
+                          <span>&middot;</span>
                           <span>{meal.macros.fat}g F</span>
+                          {meal.macros.saturatedFat > 0 && <><span>&middot;</span><span>{meal.macros.saturatedFat}g sat.F</span></>}
+                          {meal.macros.fiber > 0 && <><span>&middot;</span><span>{meal.macros.fiber}g fiber</span></>}
                         </div>
                       </div>
                     </div>

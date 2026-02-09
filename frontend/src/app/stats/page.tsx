@@ -16,7 +16,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { TrendingUp, Flame, Award, CalendarOff, Loader2 } from 'lucide-react'
+import { TrendingUp, Flame, Award, CalendarOff, Loader2, Zap } from 'lucide-react'
 import { useStats } from '@/hooks/use-stats'
 
 type TimePeriod = 7 | 30 | 90
@@ -172,6 +172,44 @@ export default function StatsPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Average Daily Macros */}
+            {(stats.avg_daily_calories || stats.avg_daily_protein) && (
+              <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                {stats.avg_daily_calories && (
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">Avg. Daily Calories</p>
+                        <Zap className="h-4 w-4 text-warning" />
+                      </div>
+                      <p className="text-3xl font-bold text-foreground">
+                        {Math.round(parseFloat(stats.avg_daily_calories))}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        kcal per day ({stats.period_days}-day avg)
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+                {stats.avg_daily_protein && (
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">Avg. Daily Protein</p>
+                        <TrendingUp className="h-4 w-4 text-success" />
+                      </div>
+                      <p className="text-3xl font-bold text-foreground">
+                        {parseFloat(stats.avg_daily_protein).toFixed(1)}g
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        protein per day ({stats.period_days}-day avg)
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
 
             {/* Adherence Chart */}
             {chartData.length > 0 && (

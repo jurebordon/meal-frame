@@ -60,7 +60,10 @@ def build_slot_response(slot) -> WeeklyPlanSlotResponse:
             calories_kcal=slot.meal.calories_kcal,
             protein_g=slot.meal.protein_g,
             carbs_g=slot.meal.carbs_g,
+            sugar_g=slot.meal.sugar_g,
             fat_g=slot.meal.fat_g,
+            saturated_fat_g=slot.meal.saturated_fat_g,
+            fiber_g=slot.meal.fiber_g,
         )
 
     meal_type_compact = None

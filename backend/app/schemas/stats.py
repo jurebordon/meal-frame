@@ -73,6 +73,14 @@ class StatsResponse(BaseSchema):
         default_factory=list,
         description="Per-day adherence data points for charting, ordered by date ascending",
     )
+    avg_daily_calories: Decimal | None = Field(
+        default=None,
+        description="Average daily calories across days with meal data",
+    )
+    avg_daily_protein: Decimal | None = Field(
+        default=None,
+        description="Average daily protein (g) across days with meal data",
+    )
 
 
 class StatsQueryParams(BaseSchema):

@@ -13,7 +13,10 @@ interface MealCardProps {
   calories?: number
   protein?: number
   carbs?: number
+  sugar?: number
   fat?: number
+  saturatedFat?: number
+  fiber?: number
   status?: MealCardStatus
   completionStatus?: 'followed' | 'adjusted' | 'skipped' | 'replaced' | 'social'
   className?: string
@@ -27,7 +30,10 @@ export function MealCard({
   calories,
   protein,
   carbs,
+  sugar,
   fat,
+  saturatedFat,
+  fiber,
   status = 'default',
   completionStatus,
   className,
@@ -69,11 +75,14 @@ export function MealCard({
 
           {/* Macros Row - Subtle, Secondary */}
           {(calories || protein || carbs || fat) && (
-            <div className="flex flex-wrap gap-4 pt-2 text-sm text-muted-foreground">
-              {calories && <span>{calories} kcal</span>}
-              {protein && <span>{protein}g protein</span>}
-              {carbs && <span>{carbs}g carbs</span>}
-              {fat && <span>{fat}g fat</span>}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 text-sm text-muted-foreground">
+              {calories != null && <span>{calories} kcal</span>}
+              {protein != null && <span>{protein}g protein</span>}
+              {carbs != null && <span>{carbs}g carbs</span>}
+              {sugar != null && <span>{sugar}g sugar</span>}
+              {fat != null && <span>{fat}g fat</span>}
+              {saturatedFat != null && <span>{saturatedFat}g sat. fat</span>}
+              {fiber != null && <span>{fiber}g fiber</span>}
             </div>
           )}
         </div>

@@ -55,11 +55,11 @@ export default function MealsPage() {
       portion_description: meal.portion_description,
       calories_kcal: meal.calories_kcal,
       protein_g: meal.protein_g ? Number(meal.protein_g) : null,
-      carbs_g: null,
-      sugar_g: null,
-      fat_g: null,
-      saturated_fat_g: null,
-      fiber_g: null,
+      carbs_g: meal.carbs_g ? Number(meal.carbs_g) : null,
+      sugar_g: meal.sugar_g ? Number(meal.sugar_g) : null,
+      fat_g: meal.fat_g ? Number(meal.fat_g) : null,
+      saturated_fat_g: meal.saturated_fat_g ? Number(meal.saturated_fat_g) : null,
+      fiber_g: meal.fiber_g ? Number(meal.fiber_g) : null,
       meal_type_ids: meal.meal_types.map((mt) => mt.id),
       notes: '',
     })
@@ -312,12 +312,12 @@ export default function MealsPage() {
                       {meal.calories_kcal != null && (
                         <span className="font-semibold">{meal.calories_kcal} kcal</span>
                       )}
-                      {meal.protein_g != null && (
-                        <>
-                          <span className="hidden sm:inline">&middot;</span>
-                          <span>{Number(meal.protein_g)}g protein</span>
-                        </>
-                      )}
+                      {meal.protein_g != null && <span>{Number(meal.protein_g)}g protein</span>}
+                      {meal.carbs_g != null && <span>{Number(meal.carbs_g)}g carbs</span>}
+                      {meal.sugar_g != null && <span>{Number(meal.sugar_g)}g sugar</span>}
+                      {meal.fat_g != null && <span>{Number(meal.fat_g)}g fat</span>}
+                      {meal.saturated_fat_g != null && <span>{Number(meal.saturated_fat_g)}g sat. fat</span>}
+                      {meal.fiber_g != null && <span>{Number(meal.fiber_g)}g fiber</span>}
                     </div>
                   )}
                 </div>

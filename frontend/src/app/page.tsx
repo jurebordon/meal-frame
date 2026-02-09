@@ -159,6 +159,33 @@ export default function TodayView() {
               )}
             </div>
           )}
+
+          {/* Daily Macro Totals */}
+          {hasSlots && (
+            <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              <span className="font-semibold">
+                {data.slots.reduce((s, slot) => s + (Number(slot.meal?.calories_kcal) || 0), 0)} kcal
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.protein_g) || 0), 0))}g P
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.carbs_g) || 0), 0))}g C
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.sugar_g) || 0), 0))}g sugar
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.fat_g) || 0), 0))}g F
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.saturated_fat_g) || 0), 0))}g sat.F
+              </span>
+              <span>
+                {Math.round(data.slots.reduce((s, slot) => s + (Number(slot.meal?.fiber_g) || 0), 0))}g fiber
+              </span>
+            </div>
+          )}
         </header>
 
         {/* Empty State - No Plan */}
@@ -215,10 +242,13 @@ export default function TodayView() {
               mealName={nextSlot.meal?.name ?? 'Unassigned'}
               portionDescription={nextSlot.meal?.portion_description ?? ''}
               mealType={nextSlot.meal_type?.name ?? ''}
-              calories={nextSlot.meal?.calories_kcal ?? undefined}
-              protein={nextSlot.meal?.protein_g ?? undefined}
-              carbs={nextSlot.meal?.carbs_g ?? undefined}
-              fat={nextSlot.meal?.fat_g ?? undefined}
+              calories={nextSlot.meal?.calories_kcal != null ? Number(nextSlot.meal.calories_kcal) : undefined}
+              protein={nextSlot.meal?.protein_g != null ? Number(nextSlot.meal.protein_g) : undefined}
+              carbs={nextSlot.meal?.carbs_g != null ? Number(nextSlot.meal.carbs_g) : undefined}
+              sugar={nextSlot.meal?.sugar_g != null ? Number(nextSlot.meal.sugar_g) : undefined}
+              fat={nextSlot.meal?.fat_g != null ? Number(nextSlot.meal.fat_g) : undefined}
+              saturatedFat={nextSlot.meal?.saturated_fat_g != null ? Number(nextSlot.meal.saturated_fat_g) : undefined}
+              fiber={nextSlot.meal?.fiber_g != null ? Number(nextSlot.meal.fiber_g) : undefined}
               status="next"
               onClick={() => handleMarkComplete(nextSlot)}
               onQuickComplete={() => handleQuickComplete(nextSlot)}
@@ -264,10 +294,13 @@ export default function TodayView() {
                     mealName={slot.meal?.name ?? 'Unassigned'}
                     portionDescription={slot.meal?.portion_description ?? ''}
                     mealType={slot.meal_type?.name ?? ''}
-                    calories={slot.meal?.calories_kcal ?? undefined}
-                    protein={slot.meal?.protein_g ?? undefined}
-                    carbs={slot.meal?.carbs_g ?? undefined}
-                    fat={slot.meal?.fat_g ?? undefined}
+                    calories={slot.meal?.calories_kcal != null ? Number(slot.meal.calories_kcal) : undefined}
+                    protein={slot.meal?.protein_g != null ? Number(slot.meal.protein_g) : undefined}
+                    carbs={slot.meal?.carbs_g != null ? Number(slot.meal.carbs_g) : undefined}
+                    sugar={slot.meal?.sugar_g != null ? Number(slot.meal.sugar_g) : undefined}
+                    fat={slot.meal?.fat_g != null ? Number(slot.meal.fat_g) : undefined}
+                    saturatedFat={slot.meal?.saturated_fat_g != null ? Number(slot.meal.saturated_fat_g) : undefined}
+                    fiber={slot.meal?.fiber_g != null ? Number(slot.meal.fiber_g) : undefined}
                     status={isCompleted ? 'completed' : 'default'}
                     completionStatus={slot.completion_status ?? undefined}
                     onClick={() => handleMarkComplete(slot)}

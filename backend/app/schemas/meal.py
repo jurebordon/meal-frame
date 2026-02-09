@@ -92,6 +92,11 @@ class MealListItem(BaseSchema):
     portion_description: str
     calories_kcal: int | None = None
     protein_g: Decimal | None = None
+    carbs_g: Decimal | None = None
+    sugar_g: Decimal | None = None
+    fat_g: Decimal | None = None
+    saturated_fat_g: Decimal | None = None
+    fiber_g: Decimal | None = None
     meal_types: list[MealTypeCompact] = Field(default_factory=list)
 
 

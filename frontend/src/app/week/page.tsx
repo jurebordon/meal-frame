@@ -61,10 +61,13 @@ function mapSlotsToMeals(day: WeeklyPlanInstanceDayResponse): Meal[] {
     status: slot.completion_status ? 'completed' as const : 'pending' as const,
     completionType: slot.completion_status || undefined,
     macros: {
-      calories: slot.meal?.calories_kcal || 0,
-      protein: slot.meal?.protein_g || 0,
-      carbs: slot.meal?.carbs_g || 0,
-      fat: slot.meal?.fat_g || 0,
+      calories: Number(slot.meal?.calories_kcal) || 0,
+      protein: Number(slot.meal?.protein_g) || 0,
+      carbs: Number(slot.meal?.carbs_g) || 0,
+      sugar: Number(slot.meal?.sugar_g) || 0,
+      fat: Number(slot.meal?.fat_g) || 0,
+      saturatedFat: Number(slot.meal?.saturated_fat_g) || 0,
+      fiber: Number(slot.meal?.fiber_g) || 0,
     },
   }))
 }

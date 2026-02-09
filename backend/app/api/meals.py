@@ -53,6 +53,11 @@ async def get_meals(
             portion_description=m.portion_description,
             calories_kcal=m.calories_kcal,
             protein_g=m.protein_g,
+            carbs_g=m.carbs_g,
+            sugar_g=m.sugar_g,
+            fat_g=m.fat_g,
+            saturated_fat_g=m.saturated_fat_g,
+            fiber_g=m.fiber_g,
             meal_types=[{"id": mt.id, "name": mt.name} for mt in m.meal_types],
         )
         for m in meals

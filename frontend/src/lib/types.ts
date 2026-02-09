@@ -66,7 +66,10 @@ export interface MealCompact {
   calories_kcal: number | null
   protein_g: number | null
   carbs_g: number | null
+  sugar_g: number | null
   fat_g: number | null
+  saturated_fat_g: number | null
+  fiber_g: number | null
 }
 
 export interface MealResponse {
@@ -76,7 +79,10 @@ export interface MealResponse {
   calories_kcal: number | null
   protein_g: number | null
   carbs_g: number | null
+  sugar_g: number | null
   fat_g: number | null
+  saturated_fat_g: number | null
+  fiber_g: number | null
   notes: string | null
   created_at: string
   updated_at: string
@@ -89,6 +95,11 @@ export interface MealListItem {
   portion_description: string
   calories_kcal: number | null
   protein_g: number | null
+  carbs_g: number | null
+  sugar_g: number | null
+  fat_g: number | null
+  saturated_fat_g: number | null
+  fiber_g: number | null
   meal_types: MealTypeCompact[]
 }
 
@@ -98,7 +109,10 @@ export interface MealCreate {
   calories_kcal?: number | null
   protein_g?: number | null
   carbs_g?: number | null
+  sugar_g?: number | null
   fat_g?: number | null
+  saturated_fat_g?: number | null
+  fiber_g?: number | null
   notes?: string | null
   meal_type_ids?: string[]
 }
@@ -109,7 +123,10 @@ export interface MealUpdate {
   calories_kcal?: number | null
   protein_g?: number | null
   carbs_g?: number | null
+  sugar_g?: number | null
   fat_g?: number | null
+  saturated_fat_g?: number | null
+  fiber_g?: number | null
   notes?: string | null
   meal_type_ids?: string[]
 }
@@ -377,6 +394,8 @@ export interface StatsResponse {
   override_days: number
   by_meal_type: MealTypeAdherence[]
   daily_adherence: DailyAdherence[]
+  avg_daily_calories: string | null
+  avg_daily_protein: string | null
 }
 
 // ============================================================================

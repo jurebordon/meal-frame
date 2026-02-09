@@ -119,6 +119,9 @@ async def get_stats(db: AsyncSession, days: int) -> StatsResponse:
     # Daily adherence data points
     daily_adherence = _calculate_daily_adherence(slots, start_date, today)
 
+    # Average daily macros
+    avg_cal, avg_pro = await _calculate_avg_daily_macros(db, start_date, today)
+
     return StatsResponse(
         period_days=days,
         total_slots=total_slots,
@@ -130,6 +133,8 @@ async def get_stats(db: AsyncSession, days: int) -> StatsResponse:
         override_days=override_days,
         by_meal_type=by_meal_type,
         daily_adherence=daily_adherence,
+        avg_daily_calories=avg_cal,
+        avg_daily_protein=avg_pro,
     )
 
 
@@ -251,6 +256,53 @@ async def _calculate_meal_type_adherence(
     # Sort by lowest adherence first
     adherence_list.sort(key=lambda x: x.adherence_rate)
     return adherence_list
+
+
+async def _calculate_avg_daily_macros(
+    db: AsyncSession, start_date: date, end_date: date
+) -> tuple[Decimal | None, Decimal | None]:
+    """Calculate average daily calories and protein across days with data."""
+    from sqlalchemy.orm import selectinload
+
+    slots_query = (
+        select(WeeklyPlanSlot)
+        .where(
+            and_(
+                WeeklyPlanSlot.date >= start_date,
+                WeeklyPlanSlot.date <= end_date,
+            )
+        )
+        .options(selectinload(WeeklyPlanSlot.meal))
+    )
+    result = await db.execute(slots_query)
+    slots_with_meals = result.scalars().all()
+
+    daily_totals: dict[date, dict] = defaultdict(
+        lambda: {"calories": Decimal(0), "protein": Decimal(0), "has_data": False}
+    )
+    for slot in slots_with_meals:
+        if slot.meal:
+            day = daily_totals[slot.date]
+            if slot.meal.calories_kcal is not None:
+                day["calories"] += Decimal(slot.meal.calories_kcal)
+                day["has_data"] = True
+            if slot.meal.protein_g is not None:
+                day["protein"] += slot.meal.protein_g
+                day["has_data"] = True
+
+    days_with_data = [d for d in daily_totals.values() if d["has_data"]]
+    if not days_with_data:
+        return None, None
+
+    n = Decimal(len(days_with_data))
+    avg_cal = (sum(d["calories"] for d in days_with_data) / n).quantize(
+        Decimal("1"), rounding=ROUND_HALF_UP
+    )
+    avg_pro = (sum(d["protein"] for d in days_with_data) / n).quantize(
+        Decimal("0.1"), rounding=ROUND_HALF_UP
+    )
+
+    return avg_cal, avg_pro
 
 
 def _calculate_daily_adherence(
