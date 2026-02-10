@@ -198,7 +198,7 @@ export function CompletionSheetAnimated({
             </div>
 
             {/* Options */}
-            <div className="max-h-[60vh] overflow-y-auto px-6 py-4">
+            <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
               <div className="space-y-3">
                 {statusOptions.map((option, index) => {
                   const isSelected = selectedStatus === option.status
@@ -318,8 +318,8 @@ export function CompletionSheetAnimated({
               )}
             </div>
 
-            {/* Safe area padding for mobile */}
-            <div className="h-8" />
+            {/* Safe area padding for mobile (extra space for bottom nav + home indicator) */}
+            <div className="h-16" />
           </motion.div>
         </>
       )}

@@ -5,6 +5,11 @@ import { Badge } from '@/components/ui/badge'
 import type React from 'react'
 import { useState, useRef, useEffect } from 'react'
 
+// Module-level guard: prevents swipe from cascading to the next card
+// when React re-renders a new card under the same finger
+let lastCompletionTime = 0
+const COMPLETION_COOLDOWN = 400 // ms
+
 export type MealCardStatus = 'default' | 'next' | 'completed' | 'skipped'
 
 interface MealCardGestureProps {
@@ -63,6 +68,7 @@ export function MealCardGesture({
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!enableGestures || status === 'completed' || !onQuickComplete) return
+    if (Date.now() - lastCompletionTime < COMPLETION_COOLDOWN) return
 
     const touch = e.touches[0]
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() }
@@ -139,6 +145,7 @@ export function MealCardGesture({
 
   const triggerQuickComplete = () => {
     cancelGesture()
+    lastCompletionTime = Date.now()
     if (onQuickComplete) {
       onQuickComplete()
     }
@@ -153,6 +160,7 @@ export function MealCardGesture({
       clearInterval(progressIntervalRef.current)
       progressIntervalRef.current = null
     }
+    touchStartRef.current = null
     setLongPressProgress(0)
     setSwipeProgress(0)
     setShowQuickCompleteHint(false)
