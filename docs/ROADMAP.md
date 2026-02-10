@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-09
 **Current Phase**: MVP Complete - Evaluating Phase 2
 
 ## Now (Current Work)
@@ -29,6 +29,7 @@
 ## Done (Recent)
 
 <!-- Recently completed, for context -->
+- [x] Fix: Clear status option + reduce swipe sensitivity (2026-02-09)
 - [x] Extended macro display + daily totals + avg daily stats (2026-02-08)
 - [x] CSV import: auto-create missing meal types (2026-02-07)
 - [x] "Yesterday Review" modal on morning open (2026-02-03)

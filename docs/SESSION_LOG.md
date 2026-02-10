@@ -5,6 +5,38 @@
 
 ---
 
+## Session: 2026-02-09
+
+**Role**: frontend
+**Task**: Fix completion UX — add clear status + reduce swipe sensitivity
+**Branch**: fix/completion-undo-and-swipe-sensitivity
+
+### Summary
+- Investigated reported bug where meals appeared pre-marked as "followed" on Tuesday after marking Monday's meals
+- Confirmed completion tracking is correctly scoped per-slot (not per-meal) — no code defect found
+- Most likely cause: accidental swipe gestures while scrolling (100px threshold was too sensitive)
+- Added "Clear status" button to completion sheet for resetting meals back to unmarked
+- Increased swipe-to-complete threshold from 100px to 140px
+
+### Files Changed
+- [frontend/src/components/mealframe/completion-sheet-animated.tsx](frontend/src/components/mealframe/completion-sheet-animated.tsx) - Added `onClear` prop and "Clear status" dashed button (shown only when editing)
+- [frontend/src/app/page.tsx](frontend/src/app/page.tsx) - Added `handleClearStatus` callback, wired to completion sheet
+- [frontend/src/components/mealframe/meal-card-gesture.tsx](frontend/src/components/mealframe/meal-card-gesture.tsx) - Increased SWIPE_THRESHOLD from 100 to 140px
+
+### Decisions
+- "Clear status" button uses dashed border style to visually separate it from the 5 status options
+- Button only appears when meal already has a status (not shown for fresh marking)
+- Yesterday Review modal not affected (doesn't pass `onClear` — correct since it's for marking unmarked meals)
+
+### Blockers
+- None
+
+### Next
+- Monitor production usage to see if accidental completions still occur with 140px threshold
+- Consider Phase 2 features: user auth or grocery list generation
+
+---
+
 ## Session: 2026-02-08
 
 **Role**: backend + frontend
