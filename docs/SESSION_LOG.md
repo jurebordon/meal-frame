@@ -5,6 +5,84 @@
 
 ---
 
+## Session: 2026-02-12
+
+**Role**: docs / design
+**Task**: Import new v0 designs + write implementation plans for ad-hoc meals and soft limits
+**Branch**: main (docs only)
+
+### Summary
+- Replaced v0_design directory with updated v0_design_new containing new feature designs
+- Compared old vs new: new directory is a superset — no files removed, 3 new files + 5 modified files
+- Wrote detailed 4-session implementation plan in ROADMAP.md covering both features end-to-end
+
+### New v0 Design Assets
+- `v0_design/app/adhoc-demo/page.tsx` — demo of ad-hoc meal flow
+- `v0_design/app/soft-limits-demo/page.tsx` — demo of soft limits UI
+- `v0_design/components/mealframe/meal-picker.tsx` — new meal picker bottom sheet
+- Modified: `completion-sheet-animated.tsx` (isAdHoc + onRemove props), `day-template-editor.tsx` (soft limit fields), `app/today/page.tsx`, `app/stats/page.tsx`, `app/settings/page.tsx`
+
+### Implementation Plan (4 sessions)
+1. **Session 1**: Backend for ad-hoc meals — migration (`is_adhoc` column), new endpoints (`POST /today/slots`, `DELETE /slots/{id}`)
+2. **Session 2**: Frontend for ad-hoc meals — MealPicker component, Add Meal button, ad-hoc indicators, remove flow
+3. **Session 3**: Backend for soft limits — migration (`max_calories_kcal`, `max_protein_g`), schema updates, over-limit stats calculation
+4. **Session 4**: Frontend for soft limits — template editor fields, template list preview, Stats "Over Limit" card and breakdown
+
+### Files Changed
+- [docs/ROADMAP.md](docs/ROADMAP.md) - Detailed implementation plan with 4 sessions
+- [docs/SESSION_LOG.md](docs/SESSION_LOG.md) - This entry
+- Replaced `v0_design/` directory with updated designs from `v0_design_new/`
+
+### Decisions
+- Deleted old v0_design entirely (new directory is a superset)
+- Split implementation into 4 focused sessions (2 per feature, backend then frontend)
+- Ad-hoc meals use `is_adhoc` boolean on `weekly_plan_slot` — simplest approach, slots are first-class
+- Soft limits use nullable columns on `day_template` — both optional, tracked at stats level only
+
+### Blockers
+- None
+
+### Next
+- Start Session 1: Backend for ad-hoc meals
+
+---
+
+## Session: 2026-02-10
+
+**Role**: docs / design
+**Task**: Add ad-hoc meals and day template soft limits to roadmap + v0 design prompts
+**Branch**: main (docs only)
+
+### Summary
+- Added two new features to ROADMAP.md "Next" section (above Phase 2 items):
+  1. Ad-hoc meal addition — add meals to today that aren't in the template (e.g., snacks from the meal library)
+  2. Day template calorie/macro soft limits — optional max_calories_kcal and max_protein_g per template, tracked in Stats
+- Created v0 design prompts for both features (docs/v0_prompts_adhoc_meals_and_limits.md)
+  - Prompt A: Ad-hoc meal addition (Today View button, meal picker sheet, ad-hoc card styling)
+  - Prompt B: Soft limits (template editor fields, template list preview, Stats "Over Limit" card)
+- Prompts designed for the existing v0 thread, referencing established components and patterns
+
+### Files Changed
+- [docs/ROADMAP.md](docs/ROADMAP.md) - Added two features to Next section
+- [docs/v0_prompts_adhoc_meals_and_limits.md](docs/v0_prompts_adhoc_meals_and_limits.md) - New: v0 design prompts for both features
+
+### Decisions
+- Soft limits are NOT shown in Today View or Week View — only tracked in Stats (no daily nagging)
+- Ad-hoc meals get full completion tracking, same as template meals
+- Ad-hoc meals are visually distinguished with an "Added" badge but otherwise treated as first-class
+- "Over Limit" tracking counts days where actual totals exceed either calories OR protein limit
+- Both features prioritized above Phase 2 (auth/grocery list) as personal use improvements
+
+### Blockers
+- None
+
+### Next
+- Post v0 prompts and iterate on designs
+- Implement ad-hoc meal addition (smaller scope, more immediately useful)
+- Implement soft limits (requires migration + stats backend changes)
+
+---
+
 ## Session: 2026-02-09
 
 **Role**: frontend

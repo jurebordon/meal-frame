@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-12
 **Current Phase**: MVP Complete - Evaluating Phase 2
 
 ## Now (Current Work)
@@ -10,7 +10,53 @@
 ## Next (Queued)
 
 <!-- Priority ordered - top item is next -->
-**Choose one to begin Phase 2:**
+
+### Feature: Ad-Hoc Meal Addition
+
+Add meals to today that aren't in the template (e.g., a snack from the meal library).
+
+**Session 1 — Backend**
+1. Add `is_adhoc` boolean column to `weekly_plan_slot` (Alembic migration, default `false`)
+2. Add `is_adhoc` field to `WeeklyPlanSlotBase` / `WeeklyPlanSlotWithNext` Pydantic schemas
+3. New endpoint: `POST /api/v1/today/slots` — accepts `{ meal_id: UUID }`, creates a new `WeeklyPlanSlot` for today with `is_adhoc=true`, position = max(existing positions) + 1, meal_type_id copied from the meal's primary type (or null)
+4. New endpoint: `DELETE /api/v1/slots/{slot_id}` — only allows deleting ad-hoc slots (`is_adhoc=true`), returns 403 for template slots
+5. Update `get_today_response` in `services/today.py` to include ad-hoc slots in the response (they already come from `weekly_plan_slot` query, just need `is_adhoc` in output)
+
+**Session 2 — Frontend**
+1. Copy `MealPicker` component from `v0_design/components/mealframe/meal-picker.tsx`, adapt to use real meal library data via `useMeals` hook
+2. Add "Add meal" ghost button below meal list in Today View (`page.tsx`)
+3. Create `useAddAdhocSlot` and `useDeleteAdhocSlot` mutation hooks
+4. Show ad-hoc indicator (colored left border + "Added" label) on cards where `slot.is_adhoc === true`
+5. Update `CompletionSheetAnimated` to accept `isAdHoc` + `onRemove` props, show "Remove meal" button for ad-hoc slots
+6. Wire up remove flow: completion sheet → `DELETE /slots/{id}` → invalidate today query
+
+**Design reference:** `v0_design/app/adhoc-demo/page.tsx`, `v0_design/components/mealframe/meal-picker.tsx`
+
+---
+
+### Feature: Day Template Calorie/Macro Soft Limits
+
+Optional max_calories_kcal and max_protein_g per day template. Tracked in Stats, not shown in Today/Week views.
+
+**Session 3 — Backend**
+1. Add `max_calories_kcal` (nullable Integer) and `max_protein_g` (nullable Numeric(6,1)) columns to `day_template` (Alembic migration)
+2. Update `DayTemplateBase`, `DayTemplateCreate`, `DayTemplateUpdate`, `DayTemplateResponse`, `DayTemplateListItem` schemas to include both fields (optional)
+3. Update day template CRUD service to persist the new fields
+4. Add to `StatsResponse` schema: `over_limit_days: int`, `days_with_limits: int`, `over_limit_breakdown: list[OverLimitBreakdown]` (new schema: template name, days over, total days, exceeded metric)
+5. Implement `_calculate_over_limit_stats` in `services/stats.py`: for each day with a template that has limits, compare actual daily totals (sum of slot meal macros) against the template's limits
+
+**Session 4 — Frontend**
+1. Update Day Template editor in Setup to add "Daily Limits (optional)" section with max calories and max protein inputs (reference: `v0_design/components/mealframe/day-template-editor.tsx`)
+2. Update Day Template list items to show limit preview line ("Max: 2,200 kcal / 180g protein") when limits are set
+3. Add "Over Limit Days" card to Stats page overview grid (conditionally rendered)
+4. Add "Over Limit Breakdown" section below overview cards (list of templates with exceeded counts)
+5. Update `useStats` hook types and Stats page to consume new response fields
+
+**Design reference:** `v0_design/app/soft-limits-demo/page.tsx`, `v0_design/components/mealframe/day-template-editor.tsx`
+
+---
+
+**Phase 2:**
 - User management and authentication (ADR-009) - Required to expose app to other users
 - Grocery list generation (ADR-008) - Most requested feature for personal use
 
